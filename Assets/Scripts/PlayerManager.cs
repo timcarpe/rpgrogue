@@ -1,0 +1,281 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+using UnityEngine.UI;
+
+namespace Player
+{
+	public class PlayerManager : MonoBehaviour
+	{
+		[Header("Objects")]
+		public GameObject player;
+		public GameObject playerModel;
+		public GameObject playerWeaponContainer;
+		public GameObject playerHeadArmorContainer;
+
+		[Header("Health")]
+		private float playerMaxHP;
+		private float playerHP;
+
+		[Header("Class")]
+		[SerializeField] private string playerClass;
+
+		[Header("Attributes")]
+		[SerializeField] private int playerSTR = 16;
+		[SerializeField] private int playerDEX = 14;
+		[SerializeField] private int playerCON = 16;
+		[SerializeField] private int playerINT = 12;
+		[SerializeField] private int playerCHA = 10;
+		[SerializeField] private int playerLUC = 10;
+
+		[Header("Bonuses")]
+		private int strBonus;
+		private int dexBonus;
+		private int conBonus;
+		private int intBonus;
+		private int chaBonus;
+		private int lucBonus;
+
+		private int attackBonus;
+		private int armorBonus;
+		private int initiativeBonus;
+
+		[Header("Equipment")]
+
+		[SerializeField] private GameObject playerHeadArmor;
+		[SerializeField] private GameObject playerWeapon;
+
+		private int diceType;
+		private int diceRoll;
+		private int damageBonus;
+
+		private GameObject lootItem;
+
+		private List<GameObject> equipableArmor = new List<GameObject>();
+		private List<GameObject> equipableWeapon = new List<GameObject>();
+		private GameObject[] lootableItems;
+
+		// Start is called before the first frame update
+		void Start()
+		{
+			CalculateAttributeBonuses();
+
+			ChangePlayerSize();
+
+			GenerateWeaponList();
+
+			GenerateArmorList();
+
+			GenerateLootableItemList();
+		}
+
+		// Update is called once per frame
+		void Update()
+		{
+			//Constantly check for changes to the player head armor and weapon
+			EquipPlayerHeadArmor();
+			EquipPlayerWeapon();
+			CalculateAttackBonus();
+			CalculateArmorBonus();
+			CalculateAttributeBonuses();
+			CalculateIntiative();
+			CalculateMaxHP();
+			CalculateWeaponDamage();
+		}
+
+		private void EquipPlayerHeadArmor()
+		{
+			if (playerHeadArmor != null)
+			{
+				foreach (Transform child in playerHeadArmorContainer.transform)
+				{
+					if (child.name == playerHeadArmor.name)
+						child.gameObject.SetActive(true);
+					else
+						child.gameObject.SetActive(false);
+				}
+			}
+		}
+
+		private void EquipPlayerWeapon()
+		{
+			if (playerWeapon != null)
+			{
+				foreach (Transform child in playerWeaponContainer.transform)
+				{
+					if (child.name == playerWeapon.name)
+						child.gameObject.SetActive(true);
+					else
+						child.gameObject.SetActive(false);
+				}
+			}
+		}
+
+		public void GiveItem()
+		{
+			//If item is in list of armor
+			foreach (GameObject child in equipableArmor)
+			{
+				if (child.name == lootItem.name)
+					playerHeadArmor = lootItem;
+			}
+			foreach (GameObject child in equipableWeapon)
+			{
+				if (child.name == lootItem.name)
+					playerWeapon = lootItem;
+			}
+		}
+
+		public void GiveRandomItem(int tier)
+		{
+
+		}
+		//Generate a list of weapons that are attached to the player model. These will likely all be inactive.
+		private void GenerateWeaponList()
+		{
+			foreach (Transform child in playerWeaponContainer.transform)
+			{
+				equipableWeapon.Add(child.gameObject);
+			}
+		}
+
+		public void DamagePlayerHP(int damage)
+		{
+			if ((playerHP - damage) <= 0)
+			{
+				playerHP = 0;
+				//Die
+			}
+			else
+				playerHP -= damage;
+		}
+
+		public void HealPlayerHP(int heal)
+		{
+			if ((playerHP + heal) > playerMaxHP)
+				playerHP = playerMaxHP;
+			else
+				playerHP += heal;
+		}
+
+		public float PlayerHP
+		{
+			get { return playerHP; }
+			set { playerHP = value; }
+
+		}
+		public float PlayerMaxHP
+		{
+			get { return playerMaxHP; }
+			set { playerMaxHP = value; }
+		}
+		public int AttackBonus
+		{
+			get { return attackBonus; }
+			set { attackBonus = value; }
+		}
+		public int ArmorBonus
+		{
+			get { return armorBonus; }
+			set { armorBonus = value; }
+		}
+		public int InitiativeBonus
+		{
+			get { return initiativeBonus; }
+			set { initiativeBonus = value; }
+		}
+		public int DiceType
+		{
+			get { return diceType; }
+			set { diceType = value; }
+		}
+		public int DiceRoll
+		{
+			get { return diceRoll; }
+			set { diceRoll = value; }
+		}
+		public int DamageBonus
+		{
+			get { return damageBonus; }
+			set { damageBonus = value; }
+		}
+		public GameObject LootItem
+		{
+			get { return lootItem; }
+			set { lootItem = value; }
+		}
+		public GameObject[] LootableItems
+		{
+			get { return lootableItems; }
+			set { lootableItems = value; }
+		}
+		//Generate a list of armor that are attached to the player model. These will likely all be inactive.
+		private void GenerateArmorList()
+		{
+			foreach (Transform child in playerHeadArmorContainer.transform)
+			{
+				equipableArmor.Add(child.gameObject);
+			}
+		}
+
+		private void GenerateLootableItemList()
+		{
+			lootableItems = equipableWeapon.ToArray().Concat(equipableArmor.ToArray()).ToArray();
+			Debug.Log("Generated a list of " + (lootableItems.Length - 1) + " lootable items.");
+		}
+
+		//Change the player size slightly based on the chosen attributes.
+		private void ChangePlayerSize()
+		{
+			playerModel.transform.localScale += new Vector3((strBonus + conBonus) / 15f, (conBonus + intBonus) / 15f, 0f);
+		}
+
+		private void CalculateAttackBonus()
+		{
+			if (playerWeapon != null)
+				attackBonus = strBonus + playerWeapon.GetComponent<EquipmentStats>().qualityModifer;
+			else
+				attackBonus = strBonus;
+		}
+
+		private void CalculateArmorBonus()
+		{
+			if (playerHeadArmor != null)
+				armorBonus = dexBonus + playerHeadArmor.GetComponent<EquipmentStats>().armorValue + playerHeadArmor.GetComponent<EquipmentStats>().qualityModifer;
+			else
+				armorBonus = dexBonus;
+		}
+		
+		private void CalculateIntiative()
+		{
+			initiativeBonus = dexBonus;
+		}
+
+		private void CalculateAttributeBonuses()
+		{
+			strBonus = ((playerSTR - 10) / 2);
+			dexBonus = ((playerDEX - 10) / 2);
+			conBonus = ((playerCON - 10) / 2);
+			intBonus = ((playerINT - 10) / 2);
+			chaBonus = ((playerCHA - 10) / 2);
+			lucBonus = ((playerLUC - 10) / 2);
+		}
+
+		private void CalculateMaxHP()
+		{
+			playerMaxHP = (20 + (conBonus * 3));
+			playerHP = playerMaxHP;
+		}
+
+		private void CalculateWeaponDamage()
+		{
+			if (playerWeapon != null)
+			{
+				diceType = playerWeapon.GetComponent<EquipmentStats>().diceSides;
+				diceRoll = playerWeapon.GetComponent<EquipmentStats>().diceRollAmount;
+				damageBonus = playerWeapon.GetComponent<EquipmentStats>().qualityModifer + (int)strBonus;
+			}
+		}
+	}
+}

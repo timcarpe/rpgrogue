@@ -1,0 +1,80 @@
+Edit the dialogue on the go.
+You can edit and add comments, edit the tags, and set node type.
+Do not attempt to add more nodes: the number of nodes must match when importing the text file.
+Do not modify the IDs.
+Do not add or remove empty lines.
+Do not restructure the data.
+
+Dialogue name: demo_Narration
+---------------------------------
+#NODEID#
+0
+#TAG#
+
+#ISPLAYER#
+False
+---
+#COMMENT#
+Once upon a time...
+#COMMENT#
+In a land far away
+#COMMENT#
+Something happened!
+---------------------------------
+#NODEID#
+1
+#TAG#
+
+#ISPLAYER#
+True
+---
+#COMMENT#
+No Way!
+#COMMENT#
+What happened?
+#COMMENT#
+Laaaame...
+---------------------------------
+#NODEID#
+2
+#TAG#
+
+#ISPLAYER#
+False
+---
+#COMMENT#
+A terrible thing happened!
+#COMMENT#
+The end.
+---------------------------------
+#NODEID#
+3
+#TAG#
+
+#ISPLAYER#
+False
+---
+#COMMENT#
+Yes way!
+#COMMENT#
+Those were the dark times
+#COMMENT#
+As dark as this background
+#COMMENT#
+End of story.
+---------------------------------
+#NODEID#
+4
+#TAG#
+
+#ISPLAYER#
+False
+---
+#COMMENT#
+Not lame!
+#COMMENT#
+It was a tragedy...
+#COMMENT#
+That's about it.
+---------------------------------
+#END#
