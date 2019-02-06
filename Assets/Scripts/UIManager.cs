@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Player;
 using Enemies;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class UIManager : MonoBehaviour
 	{
 		healthBar.value = CalculateHealth();
 
-		CalculateAndDisplayEnemyHealth();
+		CalculateAndDisplayEnemyUI();
 	}
 
 	private float CalculateHealth()
@@ -34,19 +35,37 @@ public class UIManager : MonoBehaviour
 			return 0;//die
 	}
 
-	private void CalculateAndDisplayEnemyHealth()
+	private void CalculateAndDisplayEnemyUI()
 	{
 		sceneEnemies = EnemyManager.sceneEnemies;
 		Slider enemyHealthBar;
 
-		if(sceneEnemies != null)
+		if (sceneEnemies != null)
 			foreach (GameObject enemy in sceneEnemies)
 			{
-				enemyHealthBar = enemy.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject.GetComponent<Slider>();
+				enemyHealthBar = enemy.GetComponentInChildren<Slider>();
+
+				//enemyHealthBar = enemy.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject.GetComponent<Slider>();
 
 				enemyHealthBar.value = ( enemy.GetComponent<EnemyStats>().CurrentHP / enemy.GetComponent<EnemyStats>().MaxHP );
 			}
 		
+	}
+
+	public void ChangeOverheadText(GameObject entity, string text, int type = 0)
+	{
+		TextMeshProUGUI overHeadText = entity.GetComponentInChildren<TextMeshProUGUI>();
+
+		overHeadText.text = text;
+
+		if (type == 0)
+			overHeadText.faceColor = Color.white;
+		else if (type == 1)
+			overHeadText.faceColor = Color.red;
+		else if (type == 2)
+			overHeadText.faceColor = Color.green;
+
+		overHeadText.gameObject.GetComponent<Animator>().Play("animate");
 	}
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enemies;
 using Player;
+using System.Linq;
 
 namespace Combat
 {
@@ -11,8 +12,12 @@ namespace Combat
 		public PlayerManager PlayerManager;
 		public EnemyManager EnemyManager;
 		public DialogueManager DialogueManager;
+		public UIManager UIManager;
 
 		private bool combatHappening = false;
+		private bool playerTurn = false;
+
+		private IEnumerable<InitiativeContainer> turnOrder;
 
 		void Update()
 		{
@@ -58,17 +63,22 @@ namespace Combat
 				{
 					damageDone -= EnemyManager.sceneEnemies[rand].GetComponent<EnemyStats>().EnemyArmor;
 					EnemyManager.sceneEnemies[rand].GetComponent<EnemyStats>().CurrentHP -= damageDone;
+
 					hitEnemy = true;
+					playerTurn = false;
+
+					DialogueManager.UpdateCombatText(damageDone);
+					UIManager.ChangeOverheadText(EnemyManager.sceneEnemies[rand], damageDone.ToString(), 1);
 				}
 			}
 
-			DialogueManager.UpdateCombatText(damageDone);
 		}
 
 		public void StartCombat()
 		{
 			combatHappening = true;
 			Debug.Log("Starting Combat!");
+			CalculateInitiative();
 		}
 
 		public void CheckToEndCombat()
@@ -81,5 +91,48 @@ namespace Combat
 			}
 			EnemyManager.RemoveEnemiesFromScreen();
 		}
+
+		public void CalculateInitiative()
+		{
+			InitiativeContainer[] attackOrder;
+			attackOrder = new InitiativeContainer[EnemyManager.sceneEnemies.Length + 1];
+			Debug.Log("Created iniative array of length: " + attackOrder.Length);
+
+			int playerRoll = Random.Range(1, 20) + PlayerManager.InitiativeBonus;
+			Debug.Log("Player rolled: " + playerRoll + " initiative! With a +" + PlayerManager.InitiativeBonus + " bonus!");
+
+			int i = 0;
+
+			foreach(GameObject enemy in EnemyManager.sceneEnemies)
+			{
+				attackOrder[i] = new InitiativeContainer();
+
+				attackOrder[i].entity = enemy;
+				attackOrder[i].entityRoll = Random.Range(1, 20) + enemy.GetComponent<EnemyStats>().IniativeBonus;
+				Debug.Log(attackOrder[i].entity.name + " rolled: " + attackOrder[i].entityRoll + " initiative! With a +" + enemy.GetComponent<EnemyStats>().IniativeBonus + " bonus.");
+				i++;
+			}
+
+			attackOrder[i] = new InitiativeContainer();
+
+			attackOrder[i].entity = PlayerManager.gameObject;
+			attackOrder[i].entityRoll = playerRoll;
+
+			turnOrder = attackOrder.OrderByDescending(x => x.entityRoll);
+
+			Debug.Log("Sorted turn order:");
+			foreach (InitiativeContainer item in turnOrder)
+			{
+				Debug.Log(item.entity.name + " with a " + item.entityRoll + ".");
+				Debug.Log(item.entity.ToString() + item.entityRoll.ToString());
+				UIManager.ChangeOverheadText(item.entity, item.entityRoll.ToString(), 0);
+			}
+		}
+	}
+
+	public class InitiativeContainer
+	{
+		public GameObject entity;
+		public int entityRoll;
 	}
 }

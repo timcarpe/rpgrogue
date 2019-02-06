@@ -15,8 +15,8 @@ namespace Player
 		public GameObject playerHeadArmorContainer;
 
 		[Header("Health")]
-		private float playerMaxHP;
-		private float playerHP;
+		[SerializeField] private float playerMaxHP;
+		[SerializeField] private float playerHP;
 
 		[Header("Class")]
 		[SerializeField] private string playerClass;
@@ -30,27 +30,27 @@ namespace Player
 		[SerializeField] private int playerLUC = 10;
 
 		[Header("Bonuses")]
-		private int strBonus;
-		private int dexBonus;
-		private int conBonus;
-		private int intBonus;
-		private int chaBonus;
-		private int lucBonus;
+		[SerializeField] private int strBonus;
+		[SerializeField] private int dexBonus;
+		[SerializeField] private int conBonus;
+		[SerializeField] private int intBonus;
+		[SerializeField] private int chaBonus;
+		[SerializeField] private int lucBonus;
 
-		private int attackBonus;
-		private int armorBonus;
-		private int initiativeBonus;
+		[SerializeField] private int attackBonus;
+		[SerializeField] private int armorBonus;
+		[SerializeField] private int initiativeBonus;
 
 		[Header("Equipment")]
 
 		[SerializeField] private GameObject playerHeadArmor;
 		[SerializeField] private GameObject playerWeapon;
 
-		private int diceType;
-		private int diceRoll;
-		private int damageBonus;
+		[SerializeField] private int diceType;
+		[SerializeField] private int diceRoll;
+		[SerializeField] private int damageBonus;
 
-		private GameObject lootItem;
+		[SerializeField] private GameObject lootItem;
 
 		private List<GameObject> equipableArmor = new List<GameObject>();
 		private List<GameObject> equipableWeapon = new List<GameObject>();

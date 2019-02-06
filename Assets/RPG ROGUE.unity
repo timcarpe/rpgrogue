@@ -390,9 +390,19 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8925351456919490102, guid: db82c2afe6696034a8eccae85204fe7c,
+        type: 3}
+      propertyPath: m_Name
+      value: HealthBar
+      objectReference: {fileID: 0}
     - target: {fileID: 2540487591421525587, guid: db82c2afe6696034a8eccae85204fe7c,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5058330465021059471, guid: db82c2afe6696034a8eccae85204fe7c,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -879,9 +889,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 346452205, guid: e6d91921f012b684e987e5319c71f614, type: 3}
+      propertyPath: m_Name
+      value: HealthBarCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 346452208, guid: e6d91921f012b684e987e5319c71f614, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 549801228, guid: e6d91921f012b684e987e5319c71f614, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1621454329783322544, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 7636405345412692614, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 3.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 6064089602493521869, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6064089602493521869, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6d91921f012b684e987e5319c71f614, type: 3}
@@ -1332,7 +1370,7 @@ MonoBehaviour:
   newMove: {x: 47, y: 0, z: 0}
   speed: 10
   eventsArray:
-  - {fileID: 11400000, guid: 2a5358d522210b74f91572468e52f717, type: 2}
+  - {fileID: 11400000, guid: c6dce42353ed96046a548e3ab4317999, type: 2}
   - {fileID: 11400000, guid: c6dce42353ed96046a548e3ab4317999, type: 2}
   cameraLocationsArray:
   - {fileID: 11400000, guid: ed8dbafeb29bb8346bd8cb0d692febf5, type: 2}
@@ -1520,6 +1558,11 @@ PrefabInstance:
     - target: {fileID: 2540487591421525587, guid: db82c2afe6696034a8eccae85204fe7c,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5058330465021059471, guid: db82c2afe6696034a8eccae85204fe7c,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2213,7 +2256,6 @@ MonoBehaviour:
   PlayerManager: {fileID: 195264404}
   EnemyManager: {fileID: 226928031}
   healthBar: {fileID: 1394610421}
-  enemyHealthBars: []
   sceneEnemies: []
 --- !u!1 &983739634
 GameObject:
@@ -2676,6 +2718,7 @@ MonoBehaviour:
   PlayerManager: {fileID: 195264404}
   EnemyManager: {fileID: 226928031}
   DialogueManager: {fileID: 1419790642}
+  UIManager: {fileID: 983494107}
 --- !u!4 &1215633831
 Transform:
   m_ObjectHideFlags: 0
@@ -2856,6 +2899,8 @@ MonoBehaviour:
   playerModel: {fileID: 0}
   playerWeaponContainer: {fileID: 0}
   playerHeadArmorContainer: {fileID: 0}
+  playerMaxHP: 0
+  playerHP: 0
   playerClass: 
   playerSTR: 16
   playerDEX: 14
@@ -2863,8 +2908,21 @@ MonoBehaviour:
   playerINT: 12
   playerCHA: 10
   playerLUC: 10
+  strBonus: 0
+  dexBonus: 0
+  conBonus: 0
+  intBonus: 0
+  chaBonus: 0
+  lucBonus: 0
+  attackBonus: 0
+  armorBonus: 0
+  initiativeBonus: 0
   playerHeadArmor: {fileID: 0}
   playerWeapon: {fileID: 0}
+  diceType: 0
+  diceRoll: 0
+  damageBonus: 0
+  lootItem: {fileID: 0}
 --- !u!1 &1273824568
 GameObject:
   m_ObjectHideFlags: 0
@@ -2981,6 +3039,11 @@ PrefabInstance:
     - target: {fileID: 2540487591421525587, guid: db82c2afe6696034a8eccae85204fe7c,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5058330465021059471, guid: db82c2afe6696034a8eccae85204fe7c,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

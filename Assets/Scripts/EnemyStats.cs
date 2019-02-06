@@ -9,6 +9,7 @@ public class EnemyStats : MonoBehaviour
 	public float MaxHP;							//Maximum default hitpoints of enemy
 	public float CurrentHP;
 	public int EnemyArmor;
+	public int IniativeBonus;
 
 	[Header("Monster Attack")]
 	[Range(0, 20)] public int DiceType;
