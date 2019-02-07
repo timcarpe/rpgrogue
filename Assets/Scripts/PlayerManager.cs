@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Linq;
 using UnityEngine.UI;
 
@@ -16,7 +17,8 @@ namespace Player
 
 		[Header("Health")]
 		[SerializeField] private float playerMaxHP;
-		[SerializeField] private float playerHP;
+		[SerializeField] private float playerHP = -1;
+		[SerializeField] private float maxHPBonus;
 
 		[Header("Class")]
 		[SerializeField] private string playerClass;
@@ -50,24 +52,31 @@ namespace Player
 		[SerializeField] private int diceRoll;
 		[SerializeField] private int damageBonus;
 
+		private Vector3 defaultScale;
+
 		[SerializeField] private GameObject lootItem;
 
 		private List<GameObject> equipableArmor = new List<GameObject>();
 		private List<GameObject> equipableWeapon = new List<GameObject>();
+
 		private GameObject[] lootableItems;
 
 		// Start is called before the first frame update
 		void Start()
 		{
-			CalculateAttributeBonuses();
-
-			ChangePlayerSize();
 
 			GenerateWeaponList();
 
 			GenerateArmorList();
 
 			GenerateLootableItemList();
+
+			//Run through all of the methods for calculating bonuses one time before starting
+			Update();
+
+			SetPlayerHP();
+
+			defaultScale = playerModel.transform.localScale;
 		}
 
 		// Update is called once per frame
@@ -76,18 +85,23 @@ namespace Player
 			//Constantly check for changes to the player head armor and weapon
 			EquipPlayerHeadArmor();
 			EquipPlayerWeapon();
+
+			//Constantly check for changes to these attributes
 			CalculateAttackBonus();
 			CalculateArmorBonus();
 			CalculateAttributeBonuses();
 			CalculateIntiative();
 			CalculateMaxHP();
 			CalculateWeaponDamage();
+
+			ChangePlayerSize();
 		}
 
 		private void EquipPlayerHeadArmor()
 		{
 			if (playerHeadArmor != null)
 			{
+				//Go through each object in the Head Armor container and disable or enable to equip
 				foreach (Transform child in playerHeadArmorContainer.transform)
 				{
 					if (child.name == playerHeadArmor.name)
@@ -102,6 +116,7 @@ namespace Player
 		{
 			if (playerWeapon != null)
 			{
+				//Go through each object in the Weapon container and disable or enable to equip
 				foreach (Transform child in playerWeaponContainer.transform)
 				{
 					if (child.name == playerWeapon.name)
@@ -114,41 +129,33 @@ namespace Player
 
 		public void GiveItem()
 		{
-			//If item is in list of armor
+			//If item is in list of armor change the playerHeadArmor object to the lootItem
 			foreach (GameObject child in equipableArmor)
 			{
-				if (child.name == lootItem.name)
+				if (lootItem != null && child.name == lootItem.name)
 					playerHeadArmor = lootItem;
 			}
+			//If item is in list of weapons change the playerWeapon object to the lootItem
 			foreach (GameObject child in equipableWeapon)
 			{
-				if (child.name == lootItem.name)
+				if (lootItem != null && child.name == lootItem.name)
 					playerWeapon = lootItem;
-			}
-		}
-
-		public void GiveRandomItem(int tier)
-		{
-
-		}
-		//Generate a list of weapons that are attached to the player model. These will likely all be inactive.
-		private void GenerateWeaponList()
-		{
-			foreach (Transform child in playerWeaponContainer.transform)
-			{
-				equipableWeapon.Add(child.gameObject);
 			}
 		}
 
 		public void DamagePlayerHP(int damage)
 		{
-			if ((playerHP - damage) <= 0)
+			if (damage > 0)
 			{
-				playerHP = 0;
-				//Die
+				if ((playerHP - damage) <= 0)
+				{
+					playerHP = 0;
+
+					//Die
+				}
+				else
+					playerHP -= damage;
 			}
-			else
-				playerHP -= damage;
 		}
 
 		public void HealPlayerHP(int heal)
@@ -158,7 +165,8 @@ namespace Player
 			else
 				playerHP += heal;
 		}
-
+		
+		//Get and Set methods for all of the attributes
 		public float PlayerHP
 		{
 			get { return playerHP; }
@@ -210,12 +218,31 @@ namespace Player
 			get { return lootableItems; }
 			set { lootableItems = value; }
 		}
+		public bool IsLucky()
+		{
+			float rand = Random.Range(-18f, 2f) + lucBonus;
+
+			if (rand > 0)
+				return true;
+			else
+				return false;
+		}
+
 		//Generate a list of armor that are attached to the player model. These will likely all be inactive.
 		private void GenerateArmorList()
 		{
 			foreach (Transform child in playerHeadArmorContainer.transform)
 			{
 				equipableArmor.Add(child.gameObject);
+			}
+		}
+
+		//Generate a list of weapons that are attached to the player model. These will likely all be inactive.
+		private void GenerateWeaponList()
+		{
+			foreach (Transform child in playerWeaponContainer.transform)
+			{
+				equipableWeapon.Add(child.gameObject);
 			}
 		}
 
@@ -228,7 +255,8 @@ namespace Player
 		//Change the player size slightly based on the chosen attributes.
 		private void ChangePlayerSize()
 		{
-			playerModel.transform.localScale += new Vector3((strBonus + conBonus) / 15f, (conBonus + intBonus) / 15f, 0f);
+			//This needs to be tweaked! Need to change only the head and body not the ui elements
+			//playerModel.transform.localScale = defaultScale + new Vector3((strBonus + conBonus) / 15f, (conBonus + intBonus) / 15f, 0f);
 		}
 
 		private void CalculateAttackBonus()
@@ -264,8 +292,7 @@ namespace Player
 
 		private void CalculateMaxHP()
 		{
-			playerMaxHP = (20 + (conBonus * 3));
-			playerHP = playerMaxHP;
+			playerMaxHP = (20 + (conBonus * 3)) + maxHPBonus;			
 		}
 
 		private void CalculateWeaponDamage()
@@ -277,5 +304,22 @@ namespace Player
 				damageBonus = playerWeapon.GetComponent<EquipmentStats>().qualityModifer + (int)strBonus;
 			}
 		}
+
+		public void changeMaxHPBonus(int amount)
+		{
+			//Change the max hp by amount including negative amounts
+			maxHPBonus += amount;
+
+			//However if the amount is greater than 0 increase playerHP by the same amount
+			if(amount > 0)
+				playerHP += amount;
+		}
+
+		//Set player HP first time
+		private void SetPlayerHP()
+		{
+			playerHP = playerMaxHP;
+		}
+
 	}
 }

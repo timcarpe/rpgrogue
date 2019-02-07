@@ -56,16 +56,20 @@ public class UIManager : MonoBehaviour
 	{
 		TextMeshProUGUI overHeadText = entity.GetComponentInChildren<TextMeshProUGUI>();
 
-		overHeadText.text = text;
+		if (overHeadText != null)
+		{
+			overHeadText.text = text;
 
-		if (type == 0)
-			overHeadText.faceColor = Color.white;
-		else if (type == 1)
-			overHeadText.faceColor = Color.red;
-		else if (type == 2)
-			overHeadText.faceColor = Color.green;
+			if (type == 0)
+				overHeadText.faceColor = Color.white;
+			else if (type == 1)
+				overHeadText.faceColor = Color.red;
+			else if (type == 2)
+				overHeadText.faceColor = Color.green;
 
-		overHeadText.gameObject.GetComponent<Animator>().Play("animate");
+			overHeadText.gameObject.GetComponent<Animator>().Play("animate");
+		}
+
 	}
 
 

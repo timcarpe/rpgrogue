@@ -7,6 +7,7 @@ using RichTextSubstringHelper;
 using Player;
 using Enemies;
 using Combat;
+using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -15,8 +16,8 @@ public class DialogueManager : MonoBehaviour
 	public EnemyManager EnemyManager;
 	public CombatManager CombatManager;
 
-	public Text EVENT_text; //References
-	public Text[] PLAYER_text; //References
+	public TextMeshProUGUI EVENT_text; //References
+	public TextMeshProUGUI[] PLAYER_text; //References
 	public KeyCode continueButton; //Button to continue
 
 	private bool keyDown = false;
@@ -36,7 +37,7 @@ public class DialogueManager : MonoBehaviour
 		VD.SetNode(EventsManager.ChooseDialogue());*/
 		//Disable UI when starting just in case
 		EVENT_text.gameObject.SetActive(false);
-		foreach (Text t in PLAYER_text)
+		foreach (TextMeshProUGUI t in PLAYER_text)
 			t.transform.parent.gameObject.SetActive(false);
 
 		//Subscribe to some events and Begin the Dialogue
@@ -122,16 +123,21 @@ public class DialogueManager : MonoBehaviour
 		}
 	}
 
-	public void SetUpNewDialogue()
+	public void SetUpNewDialogue(int node = -1)
 	{
-		VD.SetNode(EventsManager.ChooseDialogue());
+		if (node == -1)
+			VD.SetNode(EventsManager.ChooseDialogue());
+		else
+		{
+			VD.SetNode(node);
+		}
 		//Start();
 	}
 	//Set all UI references off
 	void WipeAll()
 	{
 		EVENT_text.gameObject.SetActive(false);
-		foreach (Text t in PLAYER_text)
+		foreach (TextMeshProUGUI t in PLAYER_text)
 			t.transform.parent.gameObject.SetActive(false);
 	}
 
@@ -146,9 +152,16 @@ public class DialogueManager : MonoBehaviour
 		//SetMoveOnButton();
 	}
 
+	public void Close()
+	{
+		VD.EndDialogue(); //Third most important method when using VIDE     
+	}
+
 	public void SetMoveOnButton(string text = "empty")
 	{
-		RemoveCombatListener();
+		Debug.Log("Setting up move on text!");
+
+		//RemoveCombatListener();
 
 		StopAllCoroutines();
 
@@ -176,15 +189,26 @@ public class DialogueManager : MonoBehaviour
 
 		WipeAll();
 
-		//Debug.Log("Got Here");
+		string addText = "";
 
-		//GameObject temp = GameObject.Find(PlayerManager.lootItem);
+		if (EventsManager.WasLucky())
+			addText = " You feel a little lucky";
 
 		EVENT_text.gameObject.SetActive(true);
-		StartCoroutine(TypeSentence("You looted a <b>" + PlayerManager.LootItem.GetComponent<EquipmentStats>().itemName + "</b>!"));
+		StartCoroutine(TypeSentence("You looted a <b>" + PlayerManager.LootItem.GetComponent<EquipmentStats>().itemName + "</b>!" + addText));
 
 		PLAYER_text[0].transform.parent.gameObject.SetActive(true);
 		PLAYER_text[0].text = "Continue.";
+	}
+
+	public void PlayerDiedText()
+	{
+		StopAllCoroutines();
+
+		WipeAll();
+
+		SetUpNewDialogue(16);
+
 	}
 
 	public void SetCombatText()
@@ -201,24 +225,26 @@ public class DialogueManager : MonoBehaviour
 		PLAYER_text[0].transform.parent.gameObject.SetActive(true);
 		PLAYER_text[0].text = "Basic Attack.";
 
-		SetCombatListener();
+		//SetCombatListener();
 	}
 
-	private void SetCombatListener()
+	/*private void SetCombatListener()
 	{
-		PLAYER_text[0].transform.parent.gameObject.GetComponent<Button>().onClick.AddListener(CombatManager.AttackEnemy);
+		//PLAYER_text[0].transform.parent.gameObject.GetComponent<Button>().onClick.AddListener(CombatManager.AttackEnemyWrapper);
 	}
 
 	private void RemoveCombatListener()
 	{
-		PLAYER_text[0].transform.parent.gameObject.GetComponent<Button>().onClick.RemoveListener(CombatManager.AttackEnemy);
-	}
+		//PLAYER_text[0].transform.parent.gameObject.GetComponent<Button>().onClick.RemoveListener(CombatManager.AttackEnemyWrapper);
+	}*/
 
-	public void UpdateCombatText(int damage)
+	public void UpdateCombatText(string name, int damage)
 	{
-		StopAllCoroutines();
+		//StopAllCoroutines();
+		WipeAll();
 
-		StartCoroutine(TypeSentence("You did " + damage + " damage!"));
+		EVENT_text.gameObject.SetActive(true);
+		StartCoroutine(TypeSentence(name + " did " + damage + " damage!"));
 	}
 
 	public void AdvanceEventText()
