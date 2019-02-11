@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
 	public EnemyManager EnemyManager;
 	public Slider healthBar;
 	public GameObject[] sceneEnemies;
+	public TextMeshProUGUI goldText;
 
 	void Start()
 	{
@@ -23,6 +24,8 @@ public class UIManager : MonoBehaviour
 		healthBar.value = CalculateHealth();
 
 		CalculateAndDisplayEnemyUI();
+
+		DisplayGold();
 	}
 
 	private float CalculateHealth()
@@ -33,6 +36,11 @@ public class UIManager : MonoBehaviour
 		}
 		else
 			return 0;//die
+	}
+
+	private void DisplayGold()
+	{
+		goldText.text = PlayerManager.PlayerGold.ToString();
 	}
 
 	private void CalculateAndDisplayEnemyUI()
@@ -47,7 +55,7 @@ public class UIManager : MonoBehaviour
 
 				//enemyHealthBar = enemy.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject.GetComponent<Slider>();
 
-				enemyHealthBar.value = ( enemy.GetComponent<EnemyStats>().CurrentHP / enemy.GetComponent<EnemyStats>().MaxHP );
+				enemyHealthBar.value = ( enemy.GetComponent<EnemyStats>().currentHP / enemy.GetComponent<EnemyStats>().maxHP );
 			}
 		
 	}

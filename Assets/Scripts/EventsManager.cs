@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Player;
 using Enemies;
+using System.Linq;
 
 public class EventsManager : MonoBehaviour
 {
@@ -30,48 +31,125 @@ public class EventsManager : MonoBehaviour
 	private bool wasLucky;
 
 	public Events[] eventsArray;
+	public ToggleGroup eventButtons;
 
 	public CameraLocations[] cameraLocationsArray;
-	private int chosenEventIndex;
+	private Events chosenEvent;
 	private int chosenCameraIndex;
 
 	[SerializeField] private GameObject loadingObject;
 
 	//Chooses an appropriate event from array of events
-	public void ChooseEvent()
+	public IEnumerator ChooseEvent()
 	{
-		bool canDo = false;
-		int random = 0;
+		Events[] randomEvents = new Events[2];
 
-		while (canDo == false)
+		for(int i = 0; i < randomEvents.Length; i++)
 		{
-			//Choose a random index for the events array
-			random = Random.Range(0, eventsArray.Length);
-			//Checks to see if the event can be repeated
-			canDo = eventsArray[random].repeatable;
+			bool canDo = false;
+
+			int randomIndex;
+
+			while (canDo == false)
+			{
+				randomIndex = Random.Range(0, eventsArray.Length);
+
+				//Checks to see if the event can be repeated
+				if (eventsArray[randomIndex].repeatable)
+				{
+					//Choose a random index for the events array
+					randomEvents[i] = eventsArray[randomIndex];
+
+					canDo = true;
+
+					Debug.Log("Choosing event number " + i + " of type " + randomEvents[i].eventName);
+				}
+			}
 		}
+
+		for (int i = 0; i < randomEvents.Length; i++)
+		{
+			eventButtons.gameObject.transform.GetChild(i).gameObject.GetComponent<Toggle>().isOn = false;
+
+			eventButtons.gameObject.transform.GetChild(i).gameObject.SetActive(true);
+
+			eventButtons.gameObject.transform.GetChild(i).Find("EventLabel").GetComponent<Text>().text = randomEvents[i].eventType;
+
+			ColorBlock cb = eventButtons.gameObject.transform.GetChild(i).gameObject.GetComponent<Toggle>().colors;
+
+			switch (randomEvents[i].eventType)
+			{
+				case "BATTLE":
+
+					cb.normalColor = Color.red;
+
+					break;
+				case "NPC":
+
+					cb.normalColor = Color.blue;
+
+					break;
+				case "UNKNOWN":
+
+					cb.normalColor = Color.magenta;
+
+					break;
+				default:
+
+					break;
+			}
+		}
+
+		bool eventSelected = false;
+
+		while(eventSelected == false)
+		{
+			if(eventButtons.AnyTogglesOn() == true)
+			{
+				Debug.Log(eventButtons.ActiveToggles().FirstOrDefault().ToString());
+
+				chosenEvent = randomEvents[eventButtons.ActiveToggles().FirstOrDefault().transform.GetSiblingIndex()];
+
+				eventSelected = true;
+
+				Debug.Log("Choosing event: " + chosenEvent.eventName);
+
+				foreach(Transform child in eventButtons.transform)
+				{
+					child.gameObject.SetActive(false);
+				}
+
+				yield break;
+			}
+
+			yield return null;
+		}
+
+		//chosenEventIndex = 0;
+
+		//eventButtons.ActiveToggles().FirstOrDefault().transform.GetSiblingIndex();
 		//If the event can be repeated set the event index to random number
-		chosenEventIndex = random;
+		//chosenEventIndex = randomEvents[eventButtons.ActiveToggles().FirstOrDefault().transform.GetSiblingIndex()];
 	}
 
 	//Returns the event dialogue index for VIDE
 	public int ChooseDialogue()
 	{
-		return eventsArray[chosenEventIndex].dialogueIndex[Random.Range(0, eventsArray[chosenEventIndex].dialogueIndex.Length - 1)];
+		return chosenEvent.dialogueIndex[Random.Range(0, chosenEvent.dialogueIndex.Length - 1)];
 	}
 
 	//Returns event and camera information for debugging purposes
 	public string GetEventName()
 	{
-		if (eventsArray[chosenEventIndex] != null)
-			return eventsArray[chosenEventIndex].eventName;
+		if (chosenEvent != null)
+			return chosenEvent.eventName;
 		else
 			return "Empty";
 	}
 	public string GetEventType()
 	{
-		if (eventsArray[chosenEventIndex] != null)
-			return eventsArray[chosenEventIndex].type;
+		if (chosenEvent != null)
+			return chosenEvent.type;
 		else
 			return "Empty";
 	}
@@ -102,7 +180,7 @@ public class EventsManager : MonoBehaviour
 	public void LoadObjects()
 	{
 		//Get the type of event
-		string caseSwitch = eventsArray[chosenEventIndex].type;
+		string caseSwitch = chosenEvent.type;
 
 		Debug.Log("Loading event of type: " + caseSwitch);
 
@@ -145,7 +223,12 @@ public class EventsManager : MonoBehaviour
 
 				break;
 
-			case "MONSTER1":
+			case "NPC001":
+
+				loadingObject = GameObject.Find("NPC001");
+
+				loadingObject.transform.position = (mainCamera.position + monsterOffset);
+
 				break;
 			case "MONSTER2":
 				break;
@@ -175,7 +258,7 @@ public class EventsManager : MonoBehaviour
 		}
 	}
 
-	public void StartEvent()
+	public IEnumerator StartEvent()
 	{
 		//Reset the loaded object from the camera view
 		ResetLoadedObjects();
@@ -184,7 +267,7 @@ public class EventsManager : MonoBehaviour
 		SetLoadingText();
 
 		//Choose the next event
-		ChooseEvent();
+		yield return StartCoroutine(ChooseEvent());
 
 		//Load the camera for the chosen event
 		LoadCamera();
@@ -204,6 +287,8 @@ public class EventsManager : MonoBehaviour
 
 		//Animates the event box to open
 		TextManagement.OpenEventBox();
+
+		yield break;
 	}
 
 	public void EndEvent()
@@ -235,7 +320,7 @@ public class EventsManager : MonoBehaviour
 		//Get rarity from event and add player lucky bonus
 		wasLucky = PlayerManager.IsLucky();
 
-		int eventRarity = eventsArray[chosenEventIndex].tier + System.Convert.ToInt32(wasLucky);
+		int eventRarity = chosenEvent.tier + System.Convert.ToInt32(wasLucky);
 
 		List<GameObject> canLoot = new List<GameObject>();
 
@@ -264,7 +349,7 @@ public class EventsManager : MonoBehaviour
 		yield return new WaitForSecondsRealtime(3);
 
 		//Start the scene
-		StartEvent();
+		yield return StartCoroutine(StartEvent());
 
 		//Fade in Scene
 		SceneFadeAnimator.SetBool("IsStarted", true);

@@ -41,6 +41,7 @@ namespace Player
 
 		[SerializeField] private int attackBonus;
 		[SerializeField] private int armorBonus;
+		[SerializeField] private int damageReduction;
 		[SerializeField] private int initiativeBonus;
 
 		[Header("Equipment")]
@@ -55,6 +56,7 @@ namespace Player
 		private Vector3 defaultScale;
 
 		[SerializeField] private GameObject lootItem;
+		[SerializeField] private int playerGold;
 
 		private List<GameObject> equipableArmor = new List<GameObject>();
 		private List<GameObject> equipableWeapon = new List<GameObject>();
@@ -143,6 +145,11 @@ namespace Player
 			}
 		}
 
+		public void UpdatePlayerGold(int goldAmount)
+		{
+			playerGold += goldAmount;
+		}
+
 		public void DamagePlayerHP(int damage)
 		{
 			if (damage > 0)
@@ -187,6 +194,16 @@ namespace Player
 		{
 			get { return armorBonus; }
 			set { armorBonus = value; }
+		}
+		public int PlayerGold
+		{
+			get { return playerGold; }
+			set { playerGold = value; }
+		}
+		public int DamageReduction
+		{
+			get { return damageReduction; }
+			set { damageReduction = value; }
 		}
 		public int InitiativeBonus
 		{

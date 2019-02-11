@@ -5,14 +5,26 @@ using UnityEngine;
 public class EnemyStats : MonoBehaviour
 {
 	[Header("Enemy Details")]
-	public string EnemyName;					//Clean version of enemy name
-	public float MaxHP;							//Maximum default hitpoints of enemy
-	public float CurrentHP;
-	public int EnemyArmor;
-	public int IniativeBonus;
+	public string enemyName;					//Clean version of enemy name
+	public float maxHP;							//Maximum default hitpoints of enemy
+	public float currentHP;
+	public int enemyArmor;
+	public int damageReduction;
+	public int iniativeBonus;
 
 	[Header("Monster Attack")]
-	[Range(0, 20)] public int DiceType;
-	[Range(0, 10)] public int DiceRoll;
-	[Range(0, 10)] public int AddDamage;
+	[Range(0, 10)] public int attackBonus;
+	[Range(0, 20)] public int diceType;
+	[Range(0, 10)] public int diceRoll;
+	[Range(0, 10)] public int addDamage;
+
+	public void OnMouseEnter()
+	{
+		transform.Find("Hover").gameObject.SetActive(true);
+	}
+
+	public void OnMouseExit()
+	{
+		transform.Find("Hover").gameObject.SetActive(false);
+	}
 }

@@ -11,13 +11,13 @@ namespace Enemies
 		public void SetEnemyHP()
 		{
 			foreach (GameObject enemy in sceneEnemies)
-				enemy.GetComponent<EnemyStats>().CurrentHP = enemy.GetComponent<EnemyStats>().MaxHP;
+				enemy.GetComponent<EnemyStats>().currentHP = enemy.GetComponent<EnemyStats>().maxHP;
 		}
 
 		public bool AreEnemiesDead()
 		{
 			foreach (GameObject enemy in sceneEnemies)
-				if (enemy.GetComponent<EnemyStats>().CurrentHP > 0)
+				if (enemy.GetComponent<EnemyStats>().currentHP > 0)
 				{
 					return false;
 				}
@@ -28,7 +28,7 @@ namespace Enemies
 		public void RemoveEnemiesFromScreen()
 		{
 			foreach (GameObject enemy in sceneEnemies)
-				if (enemy.GetComponent<EnemyStats>().CurrentHP <= 0)
+				if (enemy.GetComponent<EnemyStats>().currentHP <= 0)
 				{
 					enemy.SetActive(false);
 				}

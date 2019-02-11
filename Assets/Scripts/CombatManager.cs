@@ -4,6 +4,7 @@ using UnityEngine;
 using Enemies;
 using Player;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace Combat
 {
@@ -17,40 +18,153 @@ namespace Combat
 
 		private bool combatHappening = false;
 
-		private IEnumerable<InitiativeContainer> turnOrder;
+		public IEnumerable<InitiativeContainer> turnOrder;
+
+		[SerializeField] private string attackType;
 
 		void Update()
 		{
-
 		}
 
-		public int BasicAttack()
+		public void BasicAttack(GameObject enemy)
 		{
 			int damage = 0;
 
-			for (int i = 0; i < PlayerManager.DiceRoll; i++)
-				damage += Random.Range(1, PlayerManager.DiceType);
+			int playerAttackRoll = Random.Range(1, 20) + PlayerManager.AttackBonus;
+			
+			int enemyArmor = enemy.GetComponent<EnemyStats>().enemyArmor;
 
-			return damage + PlayerManager.DamageBonus;
+			Debug.Log("Player rolled a " + playerAttackRoll + " vs a " + enemyArmor);
+
+			if (playerAttackRoll >= enemyArmor && EnemyManager.AreEnemiesDead() == false)
+			{
+				for (int i = 0; i < PlayerManager.DiceRoll; i++)
+					damage += Random.Range(1, PlayerManager.DiceType);
+
+				damage += PlayerManager.DamageBonus;
+
+				damage -= enemy.GetComponent<EnemyStats>().damageReduction;
+
+				enemy.GetComponent<EnemyStats>().currentHP -= damage;
+
+				DialogueManager.UpdateCombatText("You", damage);
+
+				UIManager.ChangeOverheadText(enemy, damage.ToString(), 1);
+
+				Debug.Log("Player attacking " + enemy.name + "  for " + damage + " damage! Used Basic Attack!");
+			}
+			else if (playerAttackRoll < enemyArmor)
+			{
+				Debug.Log("Player missed!");
+			}
+		}
+
+		public void PowerAttack(GameObject enemy)
+		{
+			int powerAttackAmount = 3;
+			int damage = 0;
+
+			int playerAttackRoll = Random.Range(1, 20) + PlayerManager.AttackBonus - powerAttackAmount;
+
+			int enemyArmor = enemy.GetComponent<EnemyStats>().enemyArmor;
+
+			Debug.Log("Player rolled a " + playerAttackRoll + " vs a " + enemyArmor);
+
+			if (playerAttackRoll >= enemyArmor && EnemyManager.AreEnemiesDead() == false)
+			{
+				for (int i = 0; i < PlayerManager.DiceRoll; i++)
+					damage += Random.Range(1, PlayerManager.DiceType);
+
+				damage += PlayerManager.DamageBonus + powerAttackAmount;
+				
+				damage -= enemy.GetComponent<EnemyStats>().damageReduction;
+
+				enemy.GetComponent<EnemyStats>().currentHP -= damage;
+
+				DialogueManager.UpdateCombatText("You", damage);
+
+				UIManager.ChangeOverheadText(enemy, damage.ToString(), 1);
+
+				Debug.Log("Player attacking " + enemy.name + "  for " + damage + " damage! Used Power Attack!");
+			}
+			else if (playerAttackRoll < enemyArmor)
+			{
+				Debug.Log("Player missed!");
+			}
+		}
+
+		public void Whirlwind()
+		{
+			int playerAttackRoll;
+			int enemyArmor;
+			int damage = 0;
+			//bool playerHit = false;
+
+			foreach (GameObject enemy in EnemyManager.sceneEnemies)
+			{
+				if (enemy.activeSelf)
+				{
+					playerAttackRoll = Random.Range(1, 20) + PlayerManager.AttackBonus - 5;
+
+					enemyArmor = enemy.GetComponent<EnemyStats>().enemyArmor;
+
+					Debug.Log("Whirlwind: Player rolled a " + playerAttackRoll + " vs a " + enemyArmor);
+
+					if (playerAttackRoll >= enemyArmor && EnemyManager.AreEnemiesDead() == false)
+					{
+						for (int i = 0; i < PlayerManager.DiceRoll; i++)
+							damage += Random.Range(1, PlayerManager.DiceType);
+
+						enemy.GetComponent<EnemyStats>().currentHP -= damage;
+
+						//playerHit = true;
+
+						DialogueManager.UpdateCombatText("You", damage);
+
+						UIManager.ChangeOverheadText(enemy, damage.ToString(), 1);
+
+						Debug.Log("Player attacking " + enemy.name + "  for " + damage + " damage! Used attack whirlwind!");
+
+						damage = 0;
+
+					}
+					else if (playerAttackRoll < enemyArmor)
+					{
+						Debug.Log("Player missed!");
+					}
+				}
+			}
 		}
 
 		public void AttackPlayer(GameObject enemy)
 		{
 			int enemyDamageDone = 0;
 
+			int enemyAttackRoll = Random.Range(1, 20) + enemy.GetComponent<EnemyStats>().attackBonus;
+
+			int playerArmor = Random.Range(1, 20) + PlayerManager.ArmorBonus;
+
+			Debug.Log(enemy.name + " rolled a " + enemyAttackRoll + " vs a " + playerArmor);
+
 			//Roll the damage from dice
-			for (int i = 0; i < enemy.GetComponent<EnemyStats>().DiceRoll; i++)
-				enemyDamageDone += Random.Range(1, enemy.GetComponent<EnemyStats>().DiceType);
+			if (enemyAttackRoll >= playerArmor)
+				for (int i = 0; i < enemy.GetComponent<EnemyStats>().diceRoll; i++)
+					enemyDamageDone += Random.Range(1, enemy.GetComponent<EnemyStats>().diceType);
+			else
+			{
+				Debug.Log(enemy.name + " missed!");
+				return;
+			}
 
 			//Add any damage bonuses
-			enemyDamageDone += enemy.GetComponent<EnemyStats>().AddDamage;
+			enemyDamageDone += enemy.GetComponent<EnemyStats>().addDamage;
 
-			enemyDamageDone -= PlayerManager.ArmorBonus;
+			enemyDamageDone -= PlayerManager.DamageReduction;
 
 			//Deal damage to the player
 			PlayerManager.DamagePlayerHP(enemyDamageDone);
 
-			DialogueManager.UpdateCombatText(enemy.GetComponent<EnemyStats>().EnemyName, enemyDamageDone);
+			DialogueManager.UpdateCombatText(enemy.GetComponent<EnemyStats>().enemyName, enemyDamageDone);
 
 			UIManager.ChangeOverheadText(PlayerManager.gameObject, enemyDamageDone.ToString(), 1);
 
@@ -62,36 +176,30 @@ namespace Combat
 			AttackEnemy();
 		}*/
 
-		public void AttackEnemy(GameObject enemy)
+		public void AttackEnemy(GameObject enemy, string attackType)
 		{
-			//int rand;
-			//bool hitEnemy = false;
-			//Get the damage attack
-			int damageDone = BasicAttack();
-
-			//while(hitEnemy == false && EnemyManager.AreEnemiesDead() == false)
-			if(EnemyManager.AreEnemiesDead() == false)
+			switch (attackType)
 			{
-				//Choose a random enemy
-				//rand = Random.Range(0, EnemyManager.sceneEnemies.Length);
+				case "TYPE1":
 
-				//if(EnemyManager.sceneEnemies[rand].activeInHierarchy)
-				//{
-				//Subtract armor from the damage
-				//damageDone -= EnemyManager.sceneEnemies[rand].GetComponent<EnemyStats>().EnemyArmor;
-				damageDone -= enemy.GetComponent<EnemyStats>().EnemyArmor;
-				//Deal damage to the enemy
-				//EnemyManager.sceneEnemies[rand].GetComponent<EnemyStats>().CurrentHP -= damageDone;
-				enemy.GetComponent<EnemyStats>().CurrentHP -= damageDone;
+					BasicAttack(enemy);
 
-				//Exit the loop
-				//hitEnemy = true;
+					break;
 
-				DialogueManager.UpdateCombatText("You", damageDone);
-				//UIManager.ChangeOverheadText(EnemyManager.sceneEnemies[rand], damageDone.ToString(), 1);
-				UIManager.ChangeOverheadText(enemy, damageDone.ToString(), 1);
-				Debug.Log("Player attacking " + enemy.name + "  for " + damageDone + " damage!");
-				//}
+				case "TYPE2":
+
+					PowerAttack(enemy);
+
+					break;
+
+				case "TYPE3":
+
+					Whirlwind();
+
+					break;
+
+				default: break;
+
 			}
 		}
 
@@ -125,24 +233,17 @@ namespace Combat
 				else
 				{
 					bool choseEnemy = false;
+
 					GameObject enemy;
+					
+					ToggleGroup toggleGroup = GameObject.Find("CombatUI").GetComponent<ToggleGroup>();
 
 					while(choseEnemy == false)
 					{
-						if (Input.GetMouseButtonDown(0))
+						attackType = toggleGroup.ActiveToggles().FirstOrDefault().name;
+						
+						if (Input.GetMouseButtonDown(0) && attackType != null)
 						{
-							/*Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-							RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-							Debug.Log(ray.origin + ray.direction);
-							if (hit)
-								if (hit.collider.gameObject.tag == "Enemy")
-								{
-									Debug.Log("Clicked on " + hit.collider.gameObject.name);
-									choseEnemy = true;
-									enemy = hit.collider.gameObject;
-									AttackEnemy(enemy);
-								}
-								*/
 							RaycastHit hitInfo = new RaycastHit();
 							if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
 							{
@@ -151,7 +252,9 @@ namespace Combat
 								if (enemy.CompareTag("Enemy"))
 								{
 									choseEnemy = true;
-									AttackEnemy(enemy);
+
+									AttackEnemy(enemy, attackType);
+
 									Debug.Log("Clicked on: " + hitInfo.collider.gameObject.name);
 								}
 							}
@@ -175,6 +278,10 @@ namespace Combat
 				}
 
 			}
+		}
+		public bool IsCombatHappening()
+		{
+			return combatHappening;
 		}
 
 		public void CheckToEndCombat()
@@ -218,8 +325,8 @@ namespace Combat
 				//Assign the enemy to the array
 				attackOrder[i].entity = enemy;
 				//Roll enemy iniative
-				attackOrder[i].entityRoll = Random.Range(1, 20) + enemy.GetComponent<EnemyStats>().IniativeBonus;
-				Debug.Log(attackOrder[i].entity.name + " rolled: " + attackOrder[i].entityRoll + " initiative! With a +" + enemy.GetComponent<EnemyStats>().IniativeBonus + " bonus.");
+				attackOrder[i].entityRoll = Random.Range(1, 20) + enemy.GetComponent<EnemyStats>().iniativeBonus;
+				Debug.Log(attackOrder[i].entity.name + " rolled: " + attackOrder[i].entityRoll + " initiative! With a +" + enemy.GetComponent<EnemyStats>().iniativeBonus + " bonus.");
 
 				i++;
 			}
