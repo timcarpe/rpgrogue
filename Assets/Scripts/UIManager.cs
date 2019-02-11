@@ -5,14 +5,23 @@ using UnityEngine.UI;
 using Player;
 using Enemies;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
 	public PlayerManager PlayerManager;
 	public EnemyManager EnemyManager;
+	public ShopManager ShopManager;
 	public Slider healthBar;
 	public GameObject[] sceneEnemies;
 	public TextMeshProUGUI goldText;
+	public Image weaponSlot;
+	public Image headArmorSlot;
+	public Text toolTip;
+
+	public GraphicRaycaster hitInfo;
+
+	bool test = false;
 
 	void Start()
 	{
@@ -26,6 +35,12 @@ public class UIManager : MonoBehaviour
 		CalculateAndDisplayEnemyUI();
 
 		DisplayGold();
+
+		UpdateInventory();
+
+		UpdateToolTipPosition();
+
+		if (!test) { ShopManager.SetUpShop(); test = true; }
 	}
 
 	private float CalculateHealth()
@@ -43,6 +58,41 @@ public class UIManager : MonoBehaviour
 		goldText.text = PlayerManager.PlayerGold.ToString();
 	}
 
+	private void UpdateInventory()
+	{
+		if(weaponSlot != null && PlayerManager.PlayerWeapon != null)
+		{
+			weaponSlot.GetComponent<Image>().sprite = PlayerManager.PlayerWeapon.GetComponent<SpriteRenderer>().sprite;
+
+			EquipmentStats itemStats = PlayerManager.PlayerWeapon.GetComponent<EquipmentStats>();
+			EquipmentStats slotStats = weaponSlot.GetComponent<EquipmentStats>();
+
+			slotStats.itemName = itemStats.itemName;
+			slotStats.rarity = itemStats.rarity;
+			slotStats.isWeapon = itemStats.isWeapon;
+			slotStats.diceSides = itemStats.diceSides;
+			slotStats.diceRollAmount = itemStats.diceRollAmount;
+			slotStats.qualityModifer = itemStats.qualityModifer;
+
+		}
+
+		if (headArmorSlot != null && PlayerManager.PlayerHeadArmor != null)
+		{
+			headArmorSlot.GetComponent<Image>().sprite = PlayerManager.PlayerHeadArmor.GetComponent<SpriteRenderer>().sprite;
+
+
+			EquipmentStats itemStats =  PlayerManager.PlayerHeadArmor.GetComponent<EquipmentStats>();
+			EquipmentStats slotStats =  headArmorSlot.GetComponent<EquipmentStats>();
+
+			slotStats.itemName = itemStats.itemName;
+			slotStats.rarity = itemStats.rarity;
+			slotStats.isArmor = itemStats.isArmor;
+			slotStats.armorValue = itemStats.armorValue;
+			slotStats.qualityModifer = itemStats.qualityModifer;
+
+		}
+	}
+
 	private void CalculateAndDisplayEnemyUI()
 	{
 		sceneEnemies = EnemyManager.sceneEnemies;
@@ -58,6 +108,11 @@ public class UIManager : MonoBehaviour
 				enemyHealthBar.value = ( enemy.GetComponent<EnemyStats>().currentHP / enemy.GetComponent<EnemyStats>().maxHP );
 			}
 		
+	}
+
+	private void UpdateToolTipPosition()
+	{
+		//toolTip.transform.position = Input.mousePosition;
 	}
 
 	public void ChangeOverheadText(GameObject entity, string text, int type = 0)

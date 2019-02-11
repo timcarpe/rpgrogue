@@ -145,6 +145,22 @@ namespace Player
 			}
 		}
 
+		public void GiveItem(GameObject item)
+		{
+			//If item is in list of armor change the playerHeadArmor object to the lootItem
+			foreach (GameObject child in equipableArmor)
+			{
+				if (item != null && child.name == item.name)
+					playerHeadArmor = item;
+			}
+			//If item is in list of weapons change the playerWeapon object to the lootItem
+			foreach (GameObject child in equipableWeapon)
+			{
+				if (item != null && child.name == item.name)
+					playerWeapon = item;
+			}
+		}
+
 		public void UpdatePlayerGold(int goldAmount)
 		{
 			playerGold += goldAmount;
@@ -234,6 +250,23 @@ namespace Player
 		{
 			get { return lootableItems; }
 			set { lootableItems = value; }
+		}
+		public GameObject PlayerWeapon
+		{
+			get {
+				if (playerWeapon != null)
+					return playerWeapon;
+				else return null;
+			}
+		}
+		public GameObject PlayerHeadArmor
+		{
+			get
+			{
+				if (playerHeadArmor != null)
+					return playerHeadArmor;
+				else return null;
+			}
 		}
 		public bool IsLucky()
 		{

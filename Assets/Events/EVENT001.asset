@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventName: Generic Treasure Chest
   type: CHEST
-  enemyType: CHEST
+  eventType: UNKNOWN
+  cleanName: 
   tier: 5
   repeatable: 1
   canDo: 1

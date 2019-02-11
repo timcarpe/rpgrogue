@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventName: Ghost Battle
   type: GHOSTBATTLE
-  enemyType: GHOST
+  eventType: BATTLE
+  cleanName: 
   tier: 2
   repeatable: 1
   canDo: 1

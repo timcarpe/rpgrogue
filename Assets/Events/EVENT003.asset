@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventName: NPC001
   type: NPC001
-  enemyType: NPC
+  eventType: NPC
+  cleanName: 
   tier: 0
   repeatable: 1
   canDo: 1

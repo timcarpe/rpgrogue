@@ -18,4 +18,6 @@ public class EquipmentStats : MonoBehaviour
 	[Range(0, 4)] public int diceRollAmount;
 	[Space]
 	[Range(0, 4)] public int qualityModifer;
+	[Space]
+	public int itemCost;
 }

@@ -68,6 +68,7 @@ public class EventsManager : MonoBehaviour
 		}
 
 		for (int i = 0; i < randomEvents.Length; i++)
+
 		{
 			eventButtons.gameObject.transform.GetChild(i).gameObject.GetComponent<Toggle>().isOn = false;
 
@@ -83,15 +84,21 @@ public class EventsManager : MonoBehaviour
 
 					cb.normalColor = Color.red;
 
+					eventButtons.gameObject.transform.GetChild(i).gameObject.GetComponent<Toggle>().colors = cb;
+
 					break;
 				case "NPC":
 
 					cb.normalColor = Color.blue;
 
+					eventButtons.gameObject.transform.GetChild(i).gameObject.GetComponent<Toggle>().colors = cb;
+
 					break;
 				case "UNKNOWN":
 
 					cb.normalColor = Color.magenta;
+
+					eventButtons.gameObject.transform.GetChild(i).gameObject.GetComponent<Toggle>().colors = cb;
 
 					break;
 				default:
@@ -124,12 +131,6 @@ public class EventsManager : MonoBehaviour
 
 			yield return null;
 		}
-
-		//chosenEventIndex = 0;
-
-		//eventButtons.ActiveToggles().FirstOrDefault().transform.GetSiblingIndex();
-		//If the event can be repeated set the event index to random number
-		//chosenEventIndex = randomEvents[eventButtons.ActiveToggles().FirstOrDefault().transform.GetSiblingIndex()];
 	}
 
 	//Returns the event dialogue index for VIDE
