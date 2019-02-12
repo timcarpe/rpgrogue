@@ -21,7 +21,6 @@ public class UIManager : MonoBehaviour
 
 	public GraphicRaycaster hitInfo;
 
-	bool test = false;
 
 	void Start()
 	{
@@ -39,8 +38,6 @@ public class UIManager : MonoBehaviour
 		UpdateInventory();
 
 		UpdateToolTipPosition();
-
-		if (!test) { ShopManager.SetUpShop(); test = true; }
 	}
 
 	private float CalculateHealth()
@@ -133,6 +130,17 @@ public class UIManager : MonoBehaviour
 			overHeadText.gameObject.GetComponent<Animator>().Play("animate");
 		}
 
+	}
+
+	public void DisplayShopUI()
+	{
+		ShopManager.SetUpShop();
+		ShopManager.gameObject.SetActive(true);
+	}
+
+	public void HideShopUI()
+	{
+		ShopManager.gameObject.SetActive(false);
 	}
 
 

@@ -14,6 +14,8 @@ namespace Player
 		public GameObject playerModel;
 		public GameObject playerWeaponContainer;
 		public GameObject playerHeadArmorContainer;
+		public GameObject playerRingContainer;
+		public GameObject playerAmuletContainer;
 
 		[Header("Health")]
 		[SerializeField] private float playerMaxHP;
@@ -48,6 +50,9 @@ namespace Player
 
 		[SerializeField] private GameObject playerHeadArmor;
 		[SerializeField] private GameObject playerWeapon;
+		[SerializeField] private GameObject playerRing1;
+		[SerializeField] private GameObject playerRing2;
+		[SerializeField] private GameObject playerAmulet;
 
 		[SerializeField] private int diceType;
 		[SerializeField] private int diceRoll;
@@ -60,6 +65,8 @@ namespace Player
 
 		private List<GameObject> equipableArmor = new List<GameObject>();
 		private List<GameObject> equipableWeapon = new List<GameObject>();
+		private List<GameObject> equipableRing = new List<GameObject>();
+		private List<GameObject> equipableAmulet = new List<GameObject>();
 
 		private GameObject[] lootableItems;
 
@@ -70,6 +77,8 @@ namespace Player
 			GenerateWeaponList();
 
 			GenerateArmorList();
+
+			GenerateRingList();
 
 			GenerateLootableItemList();
 
@@ -134,14 +143,26 @@ namespace Player
 			//If item is in list of armor change the playerHeadArmor object to the lootItem
 			foreach (GameObject child in equipableArmor)
 			{
-				if (lootItem != null && child.name == lootItem.name)
+				if (lootItem != null && child == lootItem)
 					playerHeadArmor = lootItem;
 			}
 			//If item is in list of weapons change the playerWeapon object to the lootItem
 			foreach (GameObject child in equipableWeapon)
 			{
-				if (lootItem != null && child.name == lootItem.name)
+				if (lootItem != null && child == lootItem)
 					playerWeapon = lootItem;
+			}
+
+			foreach (GameObject child in equipableRing)
+			{
+				if (lootItem != null && child == lootItem)
+					playerRing1 = lootItem;
+			}
+
+			foreach (GameObject child in equipableAmulet)
+			{
+				if (lootItem != null && child == lootItem)
+					playerAmulet = lootItem;
 			}
 		}
 
@@ -150,14 +171,26 @@ namespace Player
 			//If item is in list of armor change the playerHeadArmor object to the lootItem
 			foreach (GameObject child in equipableArmor)
 			{
-				if (item != null && child.name == item.name)
+				if (item != null && child == item)
 					playerHeadArmor = item;
 			}
 			//If item is in list of weapons change the playerWeapon object to the lootItem
 			foreach (GameObject child in equipableWeapon)
 			{
-				if (item != null && child.name == item.name)
+				if (item != null && child == item)
 					playerWeapon = item;
+			}
+
+			foreach (GameObject child in equipableRing)
+			{
+				if (item != null && child == item)
+					playerRing1 = item;
+			}
+
+			foreach (GameObject child in equipableAmulet)
+			{
+				if (item != null && child == item)
+					playerAmulet = item;
 			}
 		}
 
@@ -287,6 +320,14 @@ namespace Player
 			}
 		}
 
+		private void GenerateRingList()
+		{
+			foreach (Transform child in playerRingContainer.transform)
+			{
+				equipableRing.Add(child.gameObject);
+			}
+		}
+
 		//Generate a list of weapons that are attached to the player model. These will likely all be inactive.
 		private void GenerateWeaponList()
 		{
@@ -298,7 +339,10 @@ namespace Player
 
 		private void GenerateLootableItemList()
 		{
-			lootableItems = equipableWeapon.ToArray().Concat(equipableArmor.ToArray()).ToArray();
+			List<GameObject> lootList = new List<GameObject>();
+
+			lootableItems = equipableArmor.ToArray().Concat(equipableRing.ToArray()).Concat(equipableWeapon).ToArray().ToArray();
+
 			Debug.Log("Generated a list of " + (lootableItems.Length - 1) + " lootable items.");
 		}
 
@@ -320,14 +364,14 @@ namespace Player
 		private void CalculateArmorBonus()
 		{
 			if (playerHeadArmor != null)
-				armorBonus = dexBonus + playerHeadArmor.GetComponent<EquipmentStats>().armorValue + playerHeadArmor.GetComponent<EquipmentStats>().qualityModifer;
+				armorBonus = (dexBonus * 2) + playerHeadArmor.GetComponent<EquipmentStats>().armorValue + playerHeadArmor.GetComponent<EquipmentStats>().qualityModifer;
 			else
-				armorBonus = dexBonus;
+				armorBonus = (dexBonus * 2);
 		}
 		
 		private void CalculateIntiative()
 		{
-			initiativeBonus = dexBonus;
+			initiativeBonus = dexBonus * 2;
 		}
 
 		private void CalculateAttributeBonuses()
@@ -342,7 +386,12 @@ namespace Player
 
 		private void CalculateMaxHP()
 		{
-			playerMaxHP = (20 + (conBonus * 3)) + maxHPBonus;			
+			playerMaxHP = (30 + (conBonus * 5)) + maxHPBonus;
+
+			if (playerRing1 != null)
+			{
+				playerMaxHP += playerRing1.GetComponent<EquipmentStats>().maxHPBonus;
+			}
 		}
 
 		private void CalculateWeaponDamage()
@@ -351,7 +400,12 @@ namespace Player
 			{
 				diceType = playerWeapon.GetComponent<EquipmentStats>().diceSides;
 				diceRoll = playerWeapon.GetComponent<EquipmentStats>().diceRollAmount;
-				damageBonus = playerWeapon.GetComponent<EquipmentStats>().qualityModifer + (int)strBonus;
+				damageBonus = playerWeapon.GetComponent<EquipmentStats>().qualityModifer + ((int)strBonus*2);
+			}
+
+			if(playerRing1 != null)
+			{
+				damageBonus += playerRing1.GetComponent<EquipmentStats>().maxDamageBonus;
 			}
 		}
 
@@ -363,7 +417,9 @@ namespace Player
 			//However if the amount is greater than 0 increase playerHP by the same amount
 			if(amount > 0)
 				playerHP += amount;
+
 		}
+	
 
 		//Set player HP first time
 		private void SetPlayerHP()

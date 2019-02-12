@@ -18,7 +18,17 @@ public class ShopManager : MonoBehaviour
 
 	private void Update()
 	{
+		foreach (Transform child in itemsContainer.transform)
+		{
+			int cost;
+			int.TryParse(child.GetComponent<ShopButton>().shopItemCost.text, out cost);
 
+			if (cost > PlayerManager.PlayerGold)
+			{
+				child.GetComponent<Button>().interactable = false;
+			}
+
+		}
 	}
 
 	public void SetUpShop()
@@ -39,16 +49,17 @@ public class ShopManager : MonoBehaviour
 
 			Debug.Log("Setting shop " + child.name + " to " + lootItem.name);
 
-			/*
-			buttonShopItem.GetChild(0).GetComponent<Image>().sprite = lootItem.GetComponent<SpriteRenderer>().sprite;
-			child.GetChild(1).GetChild(0).GetComponent<Text>().text = lootItem.GetComponent<EquipmentStats>().itemName;
-			child.GetChild(1).GetChild(1).GetComponent<Text>().text = lootItem.GetComponent<EquipmentStats>().itemCost.ToString();
-			*/
-
 			buttonShopItem.GetComponent<ShopButton>().shopImage.sprite = lootItem.GetComponent<SpriteRenderer>().sprite;
 			buttonShopItem.GetComponent<ShopButton>().shopItemName.text = lootItem.GetComponent<EquipmentStats>().itemName;
 			buttonShopItem.GetComponent<ShopButton>().shopItemCost.text = lootItem.GetComponent<EquipmentStats>().itemCost.ToString();
 			buttonShopItem.GetComponent<ShopButton>().shopItem = lootItem;
+
+			int cost = lootItem.GetComponent<EquipmentStats>().itemCost;
+
+			if (cost > PlayerManager.PlayerGold)
+			{
+				buttonShopItem.GetComponent<Button>().interactable = false;
+			}
 		}
 	}
 	

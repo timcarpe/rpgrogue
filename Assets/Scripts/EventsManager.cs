@@ -136,7 +136,7 @@ public class EventsManager : MonoBehaviour
 	//Returns the event dialogue index for VIDE
 	public int ChooseDialogue()
 	{
-		return chosenEvent.dialogueIndex[Random.Range(0, chosenEvent.dialogueIndex.Length - 1)];
+		return chosenEvent.dialogueIndex[Random.Range(0, chosenEvent.dialogueIndex.Length)];
 	}
 
 	//Returns event and camera information for debugging purposes
@@ -328,7 +328,7 @@ public class EventsManager : MonoBehaviour
 		//Add only items that have appropriate rarity to the list
 		foreach(GameObject item in PlayerManager.LootableItems)
 		{
-			if (item.GetComponent<EquipmentStats>().rarity <= eventRarity)
+			if (item.GetComponent<EquipmentStats>() != null && item.GetComponent<EquipmentStats>().rarity <= eventRarity)
 				canLoot.Add(item);
 		}
 

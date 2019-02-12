@@ -240,7 +240,8 @@ namespace Combat
 
 					while(choseEnemy == false)
 					{
-						attackType = toggleGroup.ActiveToggles().FirstOrDefault().name;
+						if(toggleGroup.ActiveToggles().FirstOrDefault() != null)
+							attackType = toggleGroup.ActiveToggles().FirstOrDefault().name;
 						
 						if (Input.GetMouseButtonDown(0) && attackType != null)
 						{

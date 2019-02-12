@@ -19,5 +19,9 @@ public class EquipmentStats : MonoBehaviour
 	[Space]
 	[Range(0, 4)] public int qualityModifer;
 	[Space]
+	[Header("Ring")]
+	public int maxHPBonus;
+	public int maxDamageBonus;
+	[Space]
 	public int itemCost;
 }
