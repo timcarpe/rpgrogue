@@ -8,6 +8,8 @@ public class EnemyStats : MonoBehaviour
 	public string enemyName;					//Clean version of enemy name
 	public float maxHP;							//Maximum default hitpoints of enemy
 	public float currentHP;
+	public string weakElement;
+	public string resistantElement;
 	public int enemyArmor;
 	public int damageReduction;
 	public int iniativeBonus;
@@ -18,7 +20,7 @@ public class EnemyStats : MonoBehaviour
 	[Range(0, 10)] public int diceRoll;
 	[Range(0, 10)] public int addDamage;
 
-	public void OnMouseEnter()
+	/*public void OnMouseEnter()
 	{
 		transform.Find("Hover").gameObject.SetActive(true);
 	}
@@ -26,5 +28,5 @@ public class EnemyStats : MonoBehaviour
 	public void OnMouseExit()
 	{
 		transform.Find("Hover").gameObject.SetActive(false);
-	}
+	}*/
 }

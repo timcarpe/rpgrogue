@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enemies;
 using Player;
+using Spells;
 using System.Linq;
 using UnityEngine.UI;
 
@@ -14,6 +15,7 @@ namespace Combat
 		public EnemyManager EnemyManager;
 		public DialogueManager DialogueManager;
 		public UIManager UIManager;
+		public SpellUIManager SpellUIManager;
 		public EventsManager EventsManager;
 
 		private bool combatHappening = false;
@@ -25,7 +27,7 @@ namespace Combat
 		void Update()
 		{
 		}
-
+		/*
 		public void BasicAttack(GameObject enemy)
 		{
 			int damage = 0;
@@ -135,7 +137,7 @@ namespace Combat
 				}
 			}
 		}
-
+		*/
 		public void AttackPlayer(GameObject enemy)
 		{
 			int enemyDamageDone = 0;
@@ -170,12 +172,12 @@ namespace Combat
 
 			Debug.Log(enemy.name + " attacking player for " + enemyDamageDone + " damage!");
 		}
-
+		
 		/*public void AttackEnemyWrapper(GameObject enemy)
 		{
 			AttackEnemy();
 		}*/
-
+		/*
 		public void AttackEnemy(GameObject enemy, string attackType)
 		{
 			switch (attackType)
@@ -202,7 +204,7 @@ namespace Combat
 
 			}
 		}
-
+		*/
 		public void StartCombat()
 		{
 			combatHappening = true;
@@ -214,7 +216,7 @@ namespace Combat
 			StartCoroutine(RunCombat());
 		}
 
-		public IEnumerator RunCombat()
+		/*public IEnumerator RunCombat()
 		{
 			InitiativeContainer[] order = turnOrder.ToArray();
 
@@ -279,7 +281,58 @@ namespace Combat
 				}
 
 			}
+		}*/
+
+		public IEnumerator RunCombat()
+		{
+			InitiativeContainer[] order = turnOrder.ToArray();
+
+			int i = 0;
+			while (i < order.Length)
+			{
+				yield return new WaitForSecondsRealtime(1f);
+
+				//If the item in the array is not the player and combat is happening
+				if (order[i].entity.activeSelf && order[i].entity.name != "Player" && combatHappening == true)
+				{
+					AttackPlayer(order[i].entity);
+					i++;
+				}
+				//The item is the player
+				else
+				{
+					Spells.SpellManager.playerSpellCast = false;
+
+					SpellUIManager.SetButtonsActive();
+					//GameObject enemy;
+
+					//ToggleGroup toggleGroup = GameObject.Find("CombatUI").GetComponent<ToggleGroup>();
+
+					while (Spells.SpellManager.playerSpellCast == false)
+					{
+						yield return null;
+					}
+					i++;
+				}
+
+				SpellUIManager.SetButtonsInActive();
+
+				CheckToEndCombat();
+
+				//If combat ended exit the loop
+				if (combatHappening == false)
+					break;
+
+				//If i is on the last item in the array reset it
+				if (i == (order.Length) && combatHappening == true)
+				{
+					i = 0;
+					Debug.Log("Starting another round of combat!");
+				}
+
+			}
 		}
+
 		public bool IsCombatHappening()
 		{
 			return combatHappening;

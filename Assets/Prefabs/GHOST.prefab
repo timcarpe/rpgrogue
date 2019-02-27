@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &176012907
 Transform:
   m_ObjectHideFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 176012906}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.233, y: 0.72, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 0.69}
   m_Children:
   - {fileID: 591891430}
   - {fileID: 1186952971}
@@ -52,6 +52,8 @@ MonoBehaviour:
   enemyName: Ghost
   maxHP: 12
   currentHP: 0
+  weakElement: Fire
+  resistantElement: Water
   enemyArmor: 2
   damageReduction: 0
   iniativeBonus: 2
@@ -534,11 +536,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -775,11 +777,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4527080359596345963, guid: fd3f68eb21e5ddd468466f97c57d137b,
         type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4527080359596345963, guid: fd3f68eb21e5ddd468466f97c57d137b,
-        type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
@@ -916,13 +913,18 @@ PrefabInstance:
     - target: {fileID: 7372388485772573198, guid: fd3f68eb21e5ddd468466f97c57d137b,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 633068216814673569, guid: fd3f68eb21e5ddd468466f97c57d137b,
         type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 2699283056763913410, guid: fd3f68eb21e5ddd468466f97c57d137b,
+        type: 3}
+      propertyPath: m_FillRect
+      value: 
+      objectReference: {fileID: 2540487591421525587}
     - target: {fileID: 7362721402292113257, guid: fd3f68eb21e5ddd468466f97c57d137b,
         type: 3}
       propertyPath: m_Layer
@@ -930,6 +932,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd3f68eb21e5ddd468466f97c57d137b, type: 3}
+--- !u!224 &2540487591421525587 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7372388485772573198, guid: fd3f68eb21e5ddd468466f97c57d137b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4976016091631371357}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3851099185793647269 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8106345237272987384, guid: fd3f68eb21e5ddd468466f97c57d137b,
