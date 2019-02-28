@@ -4,17 +4,20 @@ using UnityEngine;
 using UnityEngine.UI; //Import this to quickly access Unity's UI classes
 using VIDE_Data; //Import this to use VIDE Dialogue's VD class
 using RichTextSubstringHelper;
-using Player;
-using Enemies;
 using Combat;
 using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
-	public EventsManager EventsManager;
-	public PlayerManager PlayerManager;
-	public EnemyManager EnemyManager;
-	public CombatManager CombatManager;
+	public static DialogueManager Instance;
+
+	private EventsManager EventsManager;
+	private PlayerManager PlayerManager;
+	private EnemyManager EnemyManager;
+	//public CombatManager CombatManager;
+
+	public delegate void CombatStartDialogue();
+	public CombatStartDialogue CombatStartDialogueCallback;
 
 	public TextMeshProUGUI EVENT_text; //References
 	public TextMeshProUGUI[] PLAYER_text; //References
@@ -23,8 +26,24 @@ public class DialogueManager : MonoBehaviour
 	private bool keyDown = false;
 	private string lastEventText;
 
+	#region Singleton
+	private void Awake()
+	{
+		if (Instance != null)
+		{
+			Debug.LogWarning("More than one singleton!");
+			return;
+		}
+
+		Instance = this;
+	}
+	#endregion
+
 	void Start()
 	{
+		EnemyManager = EnemyManager.Instance;
+		PlayerManager = PlayerManager.Instance;
+		EventsManager = EventsManager.Instance;
 		/*//Disable UI when starting just in case
 		EVENT_text.gameObject.SetActive(false);
 		foreach (Text t in PLAYER_text)
@@ -213,7 +232,9 @@ public class DialogueManager : MonoBehaviour
 
 	public void SetCombatText()
 	{
-		CombatManager.StartCombat();
+		//CombatManager.StartCombat();
+
+		CombatStartDialogueCallback();
 
 		StopAllCoroutines();
 

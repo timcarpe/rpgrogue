@@ -5,8 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class ButtonHandler : MonoBehaviour
 {
-	public TextManagement textManagement_;
-	public EventsManager eventsScript_;
+	//private TextManagement TextManager;
+	//private EventsManager EventsManager;
 	/*
 	//Updates the event text with the next line of text and updates the options UI
 	public void ContinueText()

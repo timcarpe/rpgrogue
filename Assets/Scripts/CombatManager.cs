@@ -1,22 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Enemies;
-using Player;
-using Spells;
 using System.Linq;
 using UnityEngine.UI;
+using MEC;
 
 namespace Combat
 {
 	public class CombatManager : MonoBehaviour
 	{
-		public PlayerManager PlayerManager;
-		public EnemyManager EnemyManager;
-		public DialogueManager DialogueManager;
-		public UIManager UIManager;
-		public SpellUIManager SpellUIManager;
-		public EventsManager EventsManager;
+		private PlayerManager PlayerManager;
+		private SpellManager SpellManager;
+		private EnemyManager EnemyManager;
+		private DialogueManager DialogueManager;
+		private UIManager UIManager;
+		private SpellUIManager SpellUIManager;
+		private EventsManager EventsManager;
+
 
 		private bool combatHappening = false;
 
@@ -24,6 +24,18 @@ namespace Combat
 
 		[SerializeField] private string attackType;
 
+		private void Start()
+		{
+			SpellUIManager = SpellUIManager.Instance;
+			SpellManager = SpellManager.Instance;
+			UIManager = UIManager.Instance;
+			PlayerManager = PlayerManager.Instance;
+			EnemyManager = EnemyManager.Instance;
+			DialogueManager = DialogueManager.Instance;
+			EventsManager = EventsManager.Instance;
+
+			DialogueManager.CombatStartDialogueCallback += StartCombat;
+		}
 		void Update()
 		{
 		}
@@ -168,7 +180,7 @@ namespace Combat
 
 			DialogueManager.UpdateCombatText(enemy.GetComponent<EnemyStats>().enemyName, enemyDamageDone);
 
-			UIManager.ChangeOverheadText(PlayerManager.gameObject, enemyDamageDone.ToString(), 1);
+			UIManager.CreateOverheadText(PlayerManager.gameObject, enemyDamageDone.ToString(), 1);
 
 			Debug.Log(enemy.name + " attacking player for " + enemyDamageDone + " damage!");
 		}
@@ -290,25 +302,29 @@ namespace Combat
 			int i = 0;
 			while (i < order.Length)
 			{
+				PlayerManager.RegenPlayerMana();
+
 				yield return new WaitForSecondsRealtime(1f);
 
 				//If the item in the array is not the player and combat is happening
 				if (order[i].entity.activeSelf && order[i].entity.name != "Player" && combatHappening == true)
 				{
+					Timing.RunCoroutine(EnemyManager._CycleDOTDamage(order[i].entity));
+
 					AttackPlayer(order[i].entity);
 					i++;
 				}
 				//The item is the player
 				else
 				{
-					Spells.SpellManager.playerSpellCast = false;
+					SpellManager.playerSpellCast = false;
 
 					SpellUIManager.SetButtonsActive();
 					//GameObject enemy;
 
 					//ToggleGroup toggleGroup = GameObject.Find("CombatUI").GetComponent<ToggleGroup>();
 
-					while (Spells.SpellManager.playerSpellCast == false)
+					while (SpellManager.playerSpellCast == false)
 					{
 						yield return null;
 					}
@@ -398,7 +414,7 @@ namespace Combat
 			foreach (InitiativeContainer item in turnOrder)
 			{
 				Debug.Log(item.entity.name + " with a " + item.entityRoll + ".");
-				UIManager.ChangeOverheadText(item.entity, item.entityRoll.ToString(), 0);
+				UIManager.CreateOverheadText(item.entity, item.entityRoll.ToString(), 5);
 			}
 		}
 	}

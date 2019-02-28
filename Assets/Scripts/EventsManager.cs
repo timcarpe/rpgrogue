@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Player;
-using Enemies;
 using System.Linq;
 
 public class EventsManager : MonoBehaviour
 {
+	public static EventsManager Instance;
+
 	//All of the other classes
 	public TextManagement TextManagement;
 	public ButtonHandler ButtonHandler;
 	public Animator SceneFadeAnimator;
-	public DialogueManager DialogueManager;
-	public PlayerManager PlayerManager;
-	public EnemyManager EnemyManager;
+
+	private DialogueManager DialogueManager;
+	private PlayerManager PlayerManager;
+	private EnemyManager EnemyManager;
 
 	public Transform player;
 	public Rigidbody2D rb2D;
@@ -39,6 +40,25 @@ public class EventsManager : MonoBehaviour
 
 	[SerializeField] private GameObject loadingObject;
 
+	#region Singleton
+	private void Awake()
+	{
+		if (Instance != null)
+		{
+			Debug.LogWarning("More than one singleton!");
+			return;
+		}
+
+		Instance = this;
+	}
+	#endregion
+
+	private void Start()
+	{
+		EnemyManager = EnemyManager.Instance;
+		PlayerManager = PlayerManager.Instance;
+		DialogueManager = DialogueManager.Instance;
+	}
 	//Chooses an appropriate event from array of events
 	public IEnumerator ChooseEvent()
 	{
@@ -205,7 +225,7 @@ public class EventsManager : MonoBehaviour
 				int numberEnemies = Random.Range(1, loadingObject.transform.childCount + 1);
 				Debug.Log(loadingObject.transform.childCount);
 				//Set the scene enemy array size
-				EnemyManager.SetSceneEnemeniesSize(numberEnemies);
+				EnemyManager.Instance.SetSceneEnemeniesSize(numberEnemies);
 				Debug.Log("Created an enemy arrray of length: " + EnemyManager.sceneEnemies.Length);
 
 				//Go through numberEnemies amount of childlren of loading object container and set them active
@@ -213,11 +233,11 @@ public class EventsManager : MonoBehaviour
 				{
 					loadingObject.transform.GetChild(i).gameObject.SetActive(true);
 					//Add the enemy to the scene enemy array
-					EnemyManager.AddSceneEnemy(i, loadingObject.transform.GetChild(i).gameObject);
+					EnemyManager.Instance.AddSceneEnemy(i, loadingObject.transform.GetChild(i).gameObject);
 				}
 
-				//Set enemy HP
-				EnemyManager.SetEnemyHP();
+				//Reset Enemies
+				EnemyManager.Instance.ResetEnemies();
 
 				//Move loading object container into position of camera
 				loadingObject.transform.position = (mainCamera.position + monsterOffset);

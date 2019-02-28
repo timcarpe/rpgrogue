@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class TextManagement : MonoBehaviour
 {
 	//public GameObject events_;
-	public EventsManager EventsScript;
-	public ButtonHandler ButtonScript;
+	private EventsManager EventsManager;
+	//private ButtonHandler ButtonHandler;
+
 	public Animator EventTextAnimator;
 	public Text eventName;
 	public Text eventType;
@@ -25,7 +26,11 @@ public class TextManagement : MonoBehaviour
 	//public Button button4_;
 	//public int optionChoice;
 	//private bool setUp = false;
-
+	public void Start()
+	{
+		EventsManager = EventsManager.Instance;
+		//ButtonHandler = ButtonHandler.Instance;
+	}
 	public void Update()
 	{
 		//Update the UI Debugger with new information
@@ -35,24 +40,24 @@ public class TextManagement : MonoBehaviour
 	//Adds information to the debugger menu
 	private void Debugger()
 	{
-		eventName.text = "Event Name:" + EventsScript.GetEventName();
-		eventType.text = "Event Type: " + EventsScript.GetEventType();
-		cameraName.text = "Camera Name: " + EventsScript.GetCameraName();
-		cameraPosition.text = "Camera Position: " + EventsScript.GetCameraPosition();
+		eventName.text = "Event Name:" + EventsManager.GetEventName();
+		eventType.text = "Event Type: " + EventsManager.GetEventType();
+		cameraName.text = "Camera Name: " + EventsManager.GetCameraName();
+		cameraPosition.text = "Camera Position: " + EventsManager.GetCameraPosition();
 		fps.text = "FPS: " + (1.0f / Time.smoothDeltaTime).ToString("F0");
 	}
 	//Sets the event text in the UI to the next sentence
 	public void SetNextText()
 	{
-		/*//eventText.text = EventsScript.GetText();
+		/*//eventText.text = EventsManager.GetText();
 		StopAllCoroutines();
-		StartCoroutine(TypeSentence(EventsScript.GetText()));*/
+		StartCoroutine(TypeSentence(EventsManager.GetText()));*/
 	}
 	public void SetNextResult(int options = 0)
 	{
-		/*//eventText.text = EventsScript.GetResult(options);
+		/*//eventText.text = EventsManager.GetResult(options);
 		StopAllCoroutines();
-		StartCoroutine(TypeSentence(EventsScript.GetResult(options)));*/
+		StartCoroutine(TypeSentence(EventsManager.GetResult(options)));*/
 	}
 	public void SetTextandOptions()
 	{
@@ -88,7 +93,7 @@ public class TextManagement : MonoBehaviour
 	{
 		/*button1_.onClick.RemoveAllListeners();
 		//If text has not ended add continue button that continue text
-		if (!EventsScript.IsTextEnd())
+		if (!EventsManager.IsTextEnd())
 		{
 			option1_.text = "Continue.";
 			option2_.enabled = false;
@@ -97,10 +102,10 @@ public class TextManagement : MonoBehaviour
 			button1_.onClick.AddListener(ButtonScript.ContinueText);
 		}
 		//If text has ended and there is an option choice from player
-		else if (EventsScript.IsTextEnd() && optionChoice > 0)
+		else if (EventsManager.IsTextEnd() && optionChoice > 0)
 		{
 			SetNextResult(optionChoice - 1);
-			//Debug.Log(EventsScript.GetResult());
+			//Debug.Log(EventsManager.GetResult());
 			option1_.text = "Move on.";
 			option2_.enabled = false;
 			option3_.enabled = false;
@@ -110,7 +115,7 @@ public class TextManagement : MonoBehaviour
 		//If text has ended add the decision options for each event type
 		else
 		{
-			string optionsSwitch = EventsScript.GetEventType();
+			string optionsSwitch = EventsManager.GetEventType();
 			switch (optionsSwitch)
 			{
 				case "TREASURE":

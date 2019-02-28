@@ -1,21 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Enemies;
-using Player;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-	public DialogueManager DialogueManager;
-	public PlayerManager PlayerManager;
-	public EnemyManager EnemyManager;
+	private DialogueManager DialogueManager;
+	private PlayerManager PlayerManager;
+	//public EnemyManager EnemyManager;
 
 	private bool playerDied = false;
 
 	private void Start()
 	{
 		playerDied = false;
+		PlayerManager = PlayerManager.Instance;
+		DialogueManager = DialogueManager.Instance;
 	}
 	private void Update()
 	{

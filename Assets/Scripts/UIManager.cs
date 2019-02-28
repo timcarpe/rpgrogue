@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Player;
-using Enemies;
 using TMPro;
 using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
-	public PlayerManager PlayerManager;
-	public EnemyManager EnemyManager;
-	public ShopManager ShopManager;
-	public Slider healthBar;
+	public static UIManager Instance;
+
+	private PlayerManager PlayerManager;
+	//public EnemyManager EnemyManager;
+	private ShopManager ShopManager;
+
+	public GameObject overheadTextPrefab;
+	//public Slider healthBar;
 	public GameObject[] sceneEnemies;
 	public TextMeshProUGUI goldText;
 	public Image weaponSlot;
@@ -21,17 +23,30 @@ public class UIManager : MonoBehaviour
 
 	public GraphicRaycaster hitInfo;
 
+	#region Singleton
+	private void Awake()
+	{
+		if(Instance != null)
+		{
+			Debug.LogWarning("More than one singleton!");
+			return;
+		}
+
+		Instance = this;
+	}
+	#endregion
 
 	void Start()
 	{
-
+		PlayerManager = PlayerManager.Instance;
+		ShopManager = ShopManager.Instance;
 	}
 
 	void Update()
 	{
-		healthBar.value = CalculateHealth();
+		//healthBar.value = CalculateHealth();
 
-		CalculateAndDisplayEnemyUI();
+		//CalculateAndDisplayEnemyUI();
 
 		DisplayGold();
 
@@ -39,7 +54,7 @@ public class UIManager : MonoBehaviour
 
 		UpdateToolTipPosition();
 	}
-
+	/*
 	private float CalculateHealth()
 	{
 		if (PlayerManager.PlayerHP > 0)
@@ -49,7 +64,7 @@ public class UIManager : MonoBehaviour
 		else
 			return 0;//die
 	}
-
+	*/
 	private void DisplayGold()
 	{
 		goldText.text = PlayerManager.PlayerGold.ToString();
@@ -89,7 +104,7 @@ public class UIManager : MonoBehaviour
 
 		}
 	}
-
+/*
 	private void CalculateAndDisplayEnemyUI()
 	{
 		sceneEnemies = EnemyManager.sceneEnemies;
@@ -106,7 +121,7 @@ public class UIManager : MonoBehaviour
 			}
 		
 	}
-
+*/
 	private void UpdateToolTipPosition()
 	{
 		//toolTip.transform.position = Input.mousePosition;
@@ -129,6 +144,34 @@ public class UIManager : MonoBehaviour
 
 			overHeadText.gameObject.GetComponent<Animator>().Play("animate");
 		}
+
+	}
+
+	public void CreateOverheadText(GameObject entity, string text, int type = 0)
+	{
+		if (text == "0")
+			return;
+
+		GameObject clone = Instantiate(overheadTextPrefab);
+
+		TextMeshProUGUI overheadText = clone.GetComponentInChildren<TextMeshProUGUI>();
+
+		clone.transform.position = entity.transform.position;
+
+		overheadText.text = text;
+
+		if (type == 0)
+			overheadText.faceColor = Color.white;
+		else if (type == 1)
+			overheadText.faceColor = Color.red;
+		else if (type == 2)
+			overheadText.faceColor = Color.blue;
+		else if (type == 3)
+			overheadText.faceColor = Color.green;
+		else if (type == 4)
+			overheadText.faceColor = Color.magenta;
+		else if (type == 5)
+			overheadText.faceColor = Color.grey;
 
 	}
 

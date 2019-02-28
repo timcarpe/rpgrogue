@@ -50,13 +50,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyName: Ghost
-  maxHP: 12
+  maxHP: 50
   currentHP: 0
+  maxMana: 0
+  currentMana: 0
   weakElement: Fire
   resistantElement: Water
   enemyArmor: 2
   damageReduction: 0
   iniativeBonus: 2
+  fireDot: 0
+  waterDot: 0
+  natureDot: 0
+  arcaneDot: 0
   attackBonus: 1
   diceType: 4
   diceRoll: 1
@@ -591,7 +597,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8729679892450290146
 RectTransform:
   m_ObjectHideFlags: 0

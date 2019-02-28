@@ -6,14 +6,24 @@ using UnityEngine.UI;
 
 public class SpellUIManager : MonoBehaviour
 {
+	public static SpellUIManager Instance;
 	public GameObject[] m_spellOverhead;
 	public Button[] m_ButtonArray;
 	private int m_CurrentSpellIndex = 3;
 
-	private void Start()
+	#region Singleton
+	private void Awake()
 	{
+		if (Instance != null)
+		{
+			Debug.LogWarning("More than one singleton!");
+			return;
+		}
 
+		Instance = this;
 	}
+	#endregion
+
 	public void SetSpellImage(Sprite sprite)
 	{
 		if (m_CurrentSpellIndex < 0)

@@ -5,6 +5,7 @@ using UnityEngine;
 public class SpellSettings : MonoBehaviour
 {
 	[SerializeField] private string spellType;
+	[SerializeField] private int baseManaCost;
 	[SerializeField] [Range(0, 1)] public float spellHitMultiplier;
 	[SerializeField] [Range(0, 1)] public float spellAOEMultiplier;
 	[SerializeField] [Range(0, 1)] public float spellDOTMultiplier;
@@ -14,6 +15,10 @@ public class SpellSettings : MonoBehaviour
 	public Sprite GetSpellSprite()
 	{
 		return spellSprite;
+	}
+	public float GetManaCost()
+	{
+		return baseManaCost;
 	}
 	public string GetSpellType()
 	{

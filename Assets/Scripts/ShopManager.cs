@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Player;
 using UnityEngine.UI;
 
 [ExecuteInEditMode]
 public class ShopManager : MonoBehaviour
 {
-	public PlayerManager PlayerManager;
+	public static ShopManager Instance;
+
+	private PlayerManager PlayerManager;
 
 	private GameObject[] lootableItems;
 
@@ -15,7 +16,23 @@ public class ShopManager : MonoBehaviour
 
 	private GameObject[] buttonsArray;
 
+	#region Singleton
+	private void Awake()
+	{
+		if (Instance != null)
+		{
+			Debug.LogWarning("More than one singleton!");
+			return;
+		}
 
+		Instance = this;
+	}
+	#endregion
+
+	private void Start()
+	{
+		PlayerManager = PlayerManager.Instance;
+	}
 	private void Update()
 	{
 		foreach (Transform child in itemsContainer.transform)

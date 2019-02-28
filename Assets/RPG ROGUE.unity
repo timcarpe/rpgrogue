@@ -1464,8 +1464,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea365af2991ddae44b6ce17ae4a742f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UIManager: {fileID: 983494107}
-  sceneEnemies: []
 --- !u!1 &234737343
 GameObject:
   m_ObjectHideFlags: 0
@@ -1505,6 +1503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spellType: Arcane
+  baseManaCost: 8
   spellHitMultiplier: 0.3
   spellAOEMultiplier: 0.3
   spellDOTMultiplier: 0.3
@@ -2072,7 +2071,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1977003317}
-        m_MethodName: AddSpell
+        m_MethodName: AddSpellToUI
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1321833421}
@@ -2549,13 +2548,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: HealthBarCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 346452205, guid: e6d91921f012b684e987e5319c71f614, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 346452208, guid: e6d91921f012b684e987e5319c71f614, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 549801228, guid: e6d91921f012b684e987e5319c71f614, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1621454329783322544, guid: e6d91921f012b684e987e5319c71f614,
         type: 3}
@@ -2647,6 +2650,106 @@ PrefabInstance:
     - target: {fileID: 5568764548611010370, guid: e6d91921f012b684e987e5319c71f614,
         type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2030686466512795431, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611142471686704458, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321490223739440070, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321490223739440070, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321490223739440070, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321490223739440070, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 33843224086486609, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 33843224086486609, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 33843224086486609, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 33843224086486609, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591240263679243660, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591240263679243660, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591240263679243660, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591240263679243660, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 225551646260101323, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 225551646260101323, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 225551646260101323, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 225551646260101323, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3606501980478058940, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2603342993200911741, guid: e6d91921f012b684e987e5319c71f614,
+        type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -3382,6 +3485,36 @@ MonoBehaviour:
   shopImage: {fileID: 1961525502}
   shopItemName: {fileID: 1079052711}
   shopItemCost: {fileID: 120155714}
+--- !u!1 &585479143
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 585479144}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &585479144
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585479143}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 249.82298, y: 3.3738158, z: 182.54}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &586193107
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4138,9 +4271,6 @@ MonoBehaviour:
   TextManagement: {fileID: 983494106}
   ButtonHandler: {fileID: 1273824570}
   SceneFadeAnimator: {fileID: 896083385}
-  DialogueManager: {fileID: 1419790642}
-  PlayerManager: {fileID: 195264404}
-  EnemyManager: {fileID: 226928031}
   player: {fileID: 195264403}
   rb2D: {fileID: 195264402}
   mainCamera: {fileID: 1372618692}
@@ -5913,8 +6043,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17deca4391e260f4e86be3d848939372, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EventsScript: {fileID: 787669006}
-  ButtonScript: {fileID: 1273824570}
   EventTextAnimator: {fileID: 1610606642}
   eventName: {fileID: 1099779828}
   eventType: {fileID: 899815573}
@@ -5934,10 +6062,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fafd93a110060f4c82026f55d219dbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerManager: {fileID: 195264404}
-  EnemyManager: {fileID: 226928031}
-  ShopManager: {fileID: 2104444263}
-  healthBar: {fileID: 1394610421}
+  overheadTextPrefab: {fileID: 9217735186884333831, guid: 37b93a3480ecee0408996c6b8488c84e,
+    type: 3}
   sceneEnemies: []
   goldText: {fileID: 1488746425}
   weaponSlot: {fileID: 278520279}
@@ -6134,9 +6260,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spellType: Nature
+  baseManaCost: 8
   spellHitMultiplier: 0.2
-  spellAOEMultiplier: 0.3
-  spellDOTMultiplier: 0.7
+  spellAOEMultiplier: 0.1
+  spellDOTMultiplier: 0.5
   spellSprite: {fileID: 21300000, guid: 2ac3d96d66b90fe43b011ea0b89778b6, type: 3}
 --- !u!1 &994556021
 GameObject:
@@ -6422,7 +6549,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1977003317}
-        m_MethodName: AddSpell
+        m_MethodName: AddSpellToUI
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 984578830}
@@ -7312,12 +7439,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaeeff5c0d1488c49bc8e31d36e06f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerManager: {fileID: 195264404}
-  EnemyManager: {fileID: 226928031}
-  DialogueManager: {fileID: 1419790642}
-  UIManager: {fileID: 983494107}
-  SpellUIManager: {fileID: 983494108}
-  EventsManager: {fileID: 787669006}
   attackType: 
 --- !u!4 &1215633831
 Transform:
@@ -7698,8 +7819,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27437a9c4e5b9e545ba3445f76417db0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textManagement_: {fileID: 983494106}
-  eventsScript_: {fileID: 787669006}
 --- !u!1 &1288849239
 GameObject:
   m_ObjectHideFlags: 0
@@ -7802,6 +7921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spellType: Water
+  baseManaCost: 8
   spellHitMultiplier: 0
   spellAOEMultiplier: 1
   spellDOTMultiplier: 0
@@ -8233,18 +8353,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1394321026}
   m_CullTransparentMesh: 0
---- !u!114 &1394610421 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1394610421, guid: e6d91921f012b684e987e5319c71f614,
-    type: 3}
-  m_PrefabInstance: {fileID: 425985972}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -113659843, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1419790640
 GameObject:
   m_ObjectHideFlags: 0
@@ -8289,10 +8397,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef124ae59ce5eec4586aa03a3d96ab63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EventsManager: {fileID: 787669006}
-  PlayerManager: {fileID: 195264404}
-  EnemyManager: {fileID: 226928031}
-  CombatManager: {fileID: 1215633830}
   EVENT_text: {fileID: 2111740919}
   PLAYER_text:
   - {fileID: 1086131225}
@@ -8430,7 +8534,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1977003317}
-        m_MethodName: AddSpell
+        m_MethodName: AddSpellToUI
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1558965858}
@@ -9091,6 +9195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spellType: Fire
+  baseManaCost: 8
   spellHitMultiplier: 0.75
   spellAOEMultiplier: 0.3
   spellDOTMultiplier: 0.1
@@ -9282,9 +9387,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e67d74ca0eb3de4dbe54ad7c27c9c99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DialogueManager: {fileID: 1419790642}
-  PlayerManager: {fileID: 195264404}
-  EnemyManager: {fileID: 226928031}
 --- !u!4 &1636370153
 Transform:
   m_ObjectHideFlags: 0
@@ -10256,7 +10358,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1977003317}
-        m_MethodName: AddSpell
+        m_MethodName: AddSpellToUI
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 234737343}
@@ -11676,8 +11778,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3db534c9e7fa404fa273bd510aa9262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpellUIManager: {fileID: 983494108}
-  EnemyManager: {fileID: 226928031}
   fireSpellSettings: {fileID: 1558965858}
   waterSpellSettings: {fileID: 1321833421}
   natureSpellSettings: {fileID: 984578830}
@@ -11685,6 +11785,7 @@ MonoBehaviour:
   fireParticles: {fileID: 1134129239631916, guid: 7e48ba6b1b968764490bbc70b66e3fe1,
     type: 3}
   castingLocation: {fileID: 195264403}
+  currentManaCost: 0
 --- !u!4 &1977003318
 Transform:
   m_ObjectHideFlags: 0
@@ -12334,7 +12435,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b5e1247043262a40908d196a0347471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerManager: {fileID: 195264404}
 --- !u!1 &2111740917
 GameObject:
   m_ObjectHideFlags: 0
